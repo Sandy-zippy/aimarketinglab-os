@@ -705,7 +705,7 @@
     <section class="view" id="v-crm">
       <div class="vhead"><h1>CRM</h1><span class="who">TwentyCRM · self-hosted on the Mini · CRM and pipeline only</span></div>
       <p class="lead">The full Twenty front-end, embedded. ironman writes leads in over REST, you work them here. WhatsApp stays on OpenWA, automation stays on n8n and the agents.</p>
-      <div class="frame">
+      <div class="frame" id="crmframe">
         <div class="fbar">
           <div class="dots"><i></i><i></i><i></i></div>
           <div class="furl mono">crm.<b>local</b> · twenty · self-hosted</div>
@@ -745,7 +745,7 @@
             </div>
           </div>
         </div>
-        <p class="placeholder-note mono">Placeholder frame. Phase 3 mounts the live Twenty UI here over docker compose. Company names shown are design placeholders.</p>
+        <p class="placeholder-note mono">Live Twenty is embedded here on the operating panel. This public mirror can't reach the private CRM, so it shows the layout only. Names above are placeholders.</p>
       </div>
     </section>
 
@@ -921,6 +921,11 @@
     const ta=q('#v-console textarea'), btn=q('#v-console .runbtn'), stop=q('#v-console .stopbtn');
     if(btn) btn.addEventListener('click',fire);
     if(ta) ta.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();fire();}});
+    // CRM tab: embed the live Twenty (same host the panel is served from, port 3000 — works on LAN + tailnet)
+    const cf=document.getElementById('crmframe');
+    if(cf){const base=location.protocol+'//'+location.hostname+':3000';
+      cf.innerHTML='<div class="fbar"><div class="dots"><i></i><i></i><i></i></div><div class="furl mono">'+base+' · twenty</div><a class="ftag mono" href="'+base+'" target="_blank" rel="noopener">live ↗</a></div>'+
+        '<iframe src="'+base+'" title="TwentyCRM" style="width:100%;height:640px;border:none;display:block;background:#fff"></iframe>';}
     poll(); setInterval(poll,2500);
   }
   function q(s){return document.querySelector(s);}
