@@ -829,7 +829,7 @@
     document.querySelectorAll('.rail .item').forEach(i=>i.classList.remove('on'));
     // reactivate rail markers
     if(id==='home') document.querySelector('.item[data-go="home"]').classList.add('on');
-    if(id==='console') document.querySelector('.arow.working').classList.add('on');
+    if(id==='console') document.querySelector('.arow.working')?.classList.add('on');
     if(id==='crm') document.querySelector('.item[data-go="crm"]').classList.add('on');
     if(id==='brain') document.querySelector('.item[data-go="brain"]').classList.add('on');
     if(id==='schedules') document.querySelector('.item[data-go="schedules"]').classList.add('on');
@@ -839,9 +839,6 @@
   document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>go(el.getAttribute('data-go'))));
   document.getElementById('menub').onclick=()=>document.getElementById('rail').classList.toggle('open');
   document.getElementById('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');};
-
-  // ticking elapsed timer on the live run (liveness cue)
-  let s=47; setInterval(()=>{s++;const m=String(Math.floor(s/60)).padStart(2,'0'),ss=String(s%60).padStart(2,'0');const e=document.getElementById('elapsed');if(e)e.textContent=m+':'+ss;},1000);
 </script>
 <script>
 /* LIVE controller — no-ops on the static public site (no /api/state); goes live when served by the panel. */
@@ -851,14 +848,14 @@
   const api=(p,b)=>fetch(p,{method:b?'POST':'GET',headers:H,body:b?JSON.stringify(b):null}).then(r=>r.ok?r.json():Promise.reject(r.status));
   const esc=s=>(s==null?'':(''+s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   let current='steph';
-  let replayIdx=null, replayTimer=null, curEvents=[], curJobId=null;   // run-replay state
+  let replayIdx=null, replayTimer=null, curEvents=[], curJobId=null, activeJob=null;   // run-replay state; activeJob = current agent's running job id (for Stop)
   // backend reachable (Mini panel) → full live+operable; else read the committed state.json → live read-only public view
   api('/api/state').then(s=>init(s)).catch(()=>{ fetch('state.json',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(renderPublic).catch(()=>{}); });
   function renderPublic(s){
     document.body.setAttribute('data-public','1');
     const by={}; (s.agents||[]).forEach(a=>by[a.id]=a);
     const AG=s.activity||[], CARDS=(s.missions&&s.missions.cards)||[], OP=s.operate_url||'';
-    const working=id=>/run|work|draft/i.test((by[id]&&by[id].now)||'');
+    const working=id=>/run|work/i.test((by[id]&&by[id].now)||'');
 
     // top bar: label the mirror + surface an Operate button when a live-panel URL is published
     const liveLbl=document.querySelector('.top .live span:last-child'); if(liveLbl)liveLbl.textContent='read-only mirror';
@@ -925,6 +922,12 @@
     const flc=document.querySelector('nav .grp .gc'); if(flc)flc.textContent=liveN+' live';
     const hbf=document.querySelector('.railfoot'); if(hbf)hbf.innerHTML='<span class="dot '+(s.heartbeat==='live'?'working':'idle')+'"></span><span>heartbeat · '+esc(s.heartbeat||'staged')+'</span>';
     renderSchedules(s.schedules);
+
+    // brain tab: read-only mirror can't reach the private brain — one honest note, no fabricated hits
+    const binp=q('#v-brain .bsearch input'); if(binp){binp.value='';binp.setAttribute('disabled','');binp.placeholder='Brain search runs on the live panel';}
+    document.querySelectorAll('#v-brain .bf').forEach((f,i)=>f.classList.toggle('on',i===0));
+    const bres=q('#v-brain .bres');
+    if(bres)bres.innerHTML='<div class="br"><div class="brx" style="color:var(--faint)">Brain search runs on the live operating panel, where the agents query gBrain. This public view is a read-only mirror and can\'t reach the private brain.</div></div>';
   }
   // scheduled runs as first-class objects: loaded? last run? failing? (audit UI #3)
   function renderSchedules(sched){
@@ -951,9 +954,21 @@
       const id=(row.querySelector('.id')||{}).textContent;
       row.addEventListener('click',()=>{current=id;openConsole();});
     });
+    // fleet cards must open THEIR agent, not a fixed one
+    document.querySelectorAll('#v-home .acard').forEach(c=>{
+      const id=(c.querySelector('.cid')||{}).textContent;
+      c.addEventListener('click',()=>{current=id;openConsole();});
+    });
     const ta=q('#v-console textarea'), btn=q('#v-console .runbtn'), stop=q('#v-console .stopbtn');
     if(btn) btn.addEventListener('click',fire);
     if(ta) ta.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();fire();}});
+    // Stop kills the current agent's running job
+    if(stop) stop.addEventListener('click',()=>{if(activeJob)api('/api/stop',{job:activeJob}).then(()=>setTimeout(poll,400)).catch(()=>{});});
+    wireBrain();
+    // ⌘K / ctrl-K + the top-bar affordance jump to the console + focus the assign box
+    const focusAssign=()=>{openConsole();const t=q('#v-console textarea');if(t)t.focus();};
+    document.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&(e.key==='k'||e.key==='K')){e.preventDefault();focusAssign();}});
+    const cmdk=q('.cmdk'); if(cmdk){cmdk.style.cursor='pointer';cmdk.addEventListener('click',focusAssign);}
     // CRM tab: embed the live Twenty (same host the panel is served from, port 3000 — works on LAN + tailnet)
     const cf=document.getElementById('crmframe');
     if(cf){const base=location.protocol+'//'+location.hostname+':3000';
@@ -962,14 +977,55 @@
     poll(); setInterval(poll,2500);
   }
   function q(s){return document.querySelector(s);}
+  // wipe the static sample runhead/run-history/replay so a job-less agent shows a clean slate (no cross-agent bleed)
+  function clearConsoleChrome(){
+    const rid=q('#v-console .rid'); if(rid)rid.innerHTML='run <b>—</b> · '+esc(current);
+    const rm=q('#v-console .rmeta'); if(rm)rm.textContent='no run yet';
+    const bd=q('#v-console .stbadge'); if(bd)bd.innerHTML='<span class="dot idle"></span> idle';
+    const el=document.getElementById('elapsed'); if(el)el.textContent='';
+    const rb=q('#v-console .replaybar'); if(rb)rb.remove();
+    const hist=q('#v-console .rhist'); if(hist)hist.innerHTML='<h3><span>Run history</span><span>'+esc(current)+'</span></h3><div class="hr"><div><div class="hd" style="color:var(--faint)">No runs yet for '+esc(current)+'. Assign a task above.</div></div></div>';
+  }
+  const EMPTY_TR=()=>'<div class="node"><div class="think mono">No runs yet — assign a task above to '+esc(current)+'.</div></div>';
   function openConsole(){
-    replayIdx=null; stopReplay(); curJobId=null;   // fresh agent → live, not mid-replay
+    replayIdx=null; stopReplay(); curJobId=null; curEvents=[]; activeJob=null;   // fresh agent → clean slate, not mid-replay or another agent's run
     const h=q('#v-console h1'); if(h)h.textContent=current;
+    const who=q('#v-console .console .who'); if(who)who.textContent='assign a task, then watch it work';
     const ta=q('#v-console textarea'); if(ta){ta.value='';ta.placeholder='Assign a task to '+current+', or let zayn route it. Enter to fire.';}
-    const tr=q('#v-console .transcript'); if(tr)tr.innerHTML='<div class="node"><div class="think mono">Ready. Assign a task above to '+esc(current)+'.</div></div>';
+    clearConsoleChrome();
+    const tr=q('#v-console .transcript'); if(tr)tr.innerHTML=EMPTY_TR();
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
     document.getElementById('v-console').classList.add('on');
     document.getElementById('crumb').textContent=current;
+    poll();   // pull real state for this agent immediately
+  }
+  function wireBrain(){
+    const inp=q('#v-brain .bsearch input'); if(!inp)return;
+    inp.removeAttribute('disabled'); inp.value=''; inp.placeholder='Search the brain. Try: voice of customer, construction';
+    const res=q('#v-brain .bres');
+    if(res)res.innerHTML='<div class="br"><div class="brx" style="color:var(--faint)">Type a query and press Enter to search the brain.</div></div>';
+    inp.addEventListener('keydown',e=>{
+      if(e.key!=='Enter')return;
+      const query=(inp.value||'').trim(); if(!query){if(res)res.innerHTML='<div class="br"><div class="brx" style="color:var(--faint)">Type a query and press Enter to search the brain.</div></div>';return;}
+      if(res)res.innerHTML='<div class="br"><div class="brx" style="color:var(--faint)">Searching…</div></div>';
+      api('/api/brain',{q:query}).then(d=>{
+        if(!res)return;
+        if(d&&d.error){res.innerHTML='<div class="br"><div class="brx" style="color:var(--del)">Search error: '+esc(d.error)+'</div></div>';return;}
+        const rs=(d&&d.results)||[];
+        if(!rs.length){res.innerHTML='<div class="br"><div class="brx" style="color:var(--faint)">No hits for "'+esc(query)+'".</div></div>';return;}
+        res.innerHTML=rs.map(r=>{
+          const base=((r.path||'')+'').split('/').slice(-1)[0]||(r.path||'result');
+          const pct=Math.max(0,Math.min(100,Math.round((+r.score||0)*100)));
+          return '<div class="br"><div class="brh"><span class="brt">'+esc(base)+'</span><span class="brp mono">'+esc(r.path||'')+' · '+((+r.score||0).toFixed(2))+'</span></div>'+
+            '<div class="brx">'+esc((r.snippet||'').slice(0,320))+'</div>'+
+            '<div style="width:100%;height:5px;border-radius:4px;background:var(--panel2);overflow:hidden;margin-top:9px"><i style="display:block;height:100%;background:var(--teal-dim);border-radius:4px;width:'+pct+'%"></i></div></div>';
+        }).join('');
+      }).catch(err=>{if(res)res.innerHTML='<div class="br"><div class="brx" style="color:var(--del)">Search failed ('+esc(err)+').</div></div>';});
+    });
+    // filter chips: visual toggle only (results come from the query, not a client-side filter)
+    document.querySelectorAll('#v-brain .bf').forEach(f=>f.addEventListener('click',()=>{
+      document.querySelectorAll('#v-brain .bf').forEach(x=>x.classList.remove('on'));f.classList.add('on');
+    }));
   }
   function fire(){
     const ta=q('#v-console textarea'); const task=(ta.value||'').trim();
@@ -979,21 +1035,50 @@
   function poll(){api('/api/state').then(s=>{renderRail(s);renderSchedules(s.schedules);if(v('v-console'))renderConsole(s);if(v('v-home'))renderHome(s);}).catch(()=>{});}
   function v(id){return document.getElementById(id).classList.contains('on');}
   function renderHome(s){
-    const cols=document.querySelectorAll('#v-home .board .col'), q=s.queue||[], run=(s.jobs||[]).filter(j=>j.status==='running');
+    const cols=document.querySelectorAll('#v-home .board .col');
+    const jobs=s.jobs||[], queue=s.queue||[];
+    const run=jobs.filter(j=>j.status==='running');
+    const assigned=jobs.filter(j=>j.status&&j.status!=='running'&&j.status!=='done');
+    const done=jobs.filter(j=>j.status==='done').slice(-4).reverse();
     if(cols.length>=5){
-      let h='<div class="colh"><span>Review</span><span class="n">'+q.length+'</span></div>';
-      q.forEach(it=>{const who=(it.file.replace(/^\d{4}-\d{2}-\d{2}-/,'').split(/[-.]/)[0])||'agent';
-        h+='<div class="kc rev"><div class="who">'+esc(who)+'</div><div class="t">'+esc(it.file.replace(/^\d{4}-\d{2}-\d{2}-/,'').replace(/\.md$/,''))+'</div><button class="approve" data-ap="'+esc(it.file)+'">approve</button></div>';});
-      cols[3].innerHTML=h;
-      let hw='<div class="colh"><span>Working</span><span class="n">'+run.length+'</span></div>';
-      run.forEach(j=>{hw+='<div class="kc"><div class="who">'+esc(j.agent)+'</div><div class="t">'+esc(((j.task||'run')+'').slice(0,40))+'</div><div class="m">'+(j.tools||0)+' tools</div></div>';});
-      cols[2].innerHTML=hw;
+      // Inbox — no real unrouted feed exists yet
+      cols[0].innerHTML='<div class="colh"><span>Inbox</span><span class="n">0</span></div><div class="cempty mono">nothing unrouted</div>';
+      // Assigned — queued/pending jobs not yet running
+      cols[1].innerHTML='<div class="colh"><span>Assigned</span><span class="n">'+assigned.length+'</span></div>'+
+        (assigned.length?assigned.map(j=>'<div class="kc"><div class="who">'+esc(j.agent||'agent')+'</div><div class="t">'+esc(((j.task||'run')+'').slice(0,40))+'</div><div class="m">'+esc(j.status||'')+'</div></div>').join(''):'<div class="cempty mono">—</div>');
+      // Working — running jobs
+      cols[2].innerHTML='<div class="colh"><span>Working</span><span class="n">'+run.length+'</span></div>'+
+        (run.length?run.map(j=>'<div class="kc hot"><div class="who">'+esc(j.agent||'agent')+'</div><div class="t">'+esc(((j.task||'run')+'').slice(0,40))+'</div><div class="m">'+(j.tools||0)+' tools</div><span class="fl teal">running</span></div>').join(''):'<div class="cempty mono">idle</div>');
+      // Review — the approval queue
+      cols[3].innerHTML='<div class="colh"><span>Review</span><span class="n">'+queue.length+'</span></div>'+
+        (queue.length?queue.map(it=>{const who=(it.file.replace(/^\d{4}-\d{2}-\d{2}-/,'').split(/[-.]/)[0])||'agent';
+          return '<div class="kc rev"><div class="who">'+esc(who)+'</div><div class="t">'+esc(it.file.replace(/^\d{4}-\d{2}-\d{2}-/,'').replace(/\.md$/,''))+'</div><button class="approve" data-ap="'+esc(it.file)+'" style="margin-top:7px">approve</button></div>';}).join(''):'<div class="cempty mono">nothing queued</div>');
+      // Done — recent completed jobs
+      cols[4].innerHTML='<div class="colh"><span>Done</span><span class="n">'+done.length+'</span></div>'+
+        (done.length?done.map(j=>'<div class="kc"><div class="who">'+esc(j.agent||'agent')+'</div><div class="t">'+esc(((j.task||'run')+'').slice(0,40))+'</div><div class="m">'+esc(j.started||'done')+'</div></div>').join(''):'<div class="cempty mono">—</div>');
     }
-    const by={};(s.jobs||[]).forEach(j=>{if(!by[j.agent]||j.started>by[j.agent].started)by[j.agent]=j;});
+    // header counts from real stats + real running count
+    const stx=s.stats||{};
+    const cnt=document.querySelector('#v-home .counts');
+    if(cnt)cnt.innerHTML='<span class="c"><b>'+(stx.agents||6)+'</b> agents</span>'+
+      '<span class="c"><b>'+run.length+'</b> <em>live</em></span>'+
+      '<span class="c"><b>'+(stx.skills||0)+'</b> skills</span>'+
+      '<span class="c"><b>'+(stx.gates||0)+'</b> gates</span>'+
+      '<span class="c"><b>'+queue.length+'</b> <em>need you</em></span>'+
+      '<span class="c"><b>'+esc(stx.integrations||'')+'</b> integrations</span>';
+    // activity stream from real jobs (most-recent first), honest empty otherwise
+    const st=document.querySelector('#v-home .stream');
+    if(st){const recent=jobs.slice(-6).reverse();
+      st.innerHTML=recent.length?recent.map(j=>'<div class="ev"><span class="t">'+esc(j.started||'')+'</span><span class="ag teal mono">'+esc(j.agent||'')+'</span><span class="tx">'+esc(((j.task||'run')+'').slice(0,80))+' · <b>'+esc(j.status||'')+'</b></span></div>').join('')
+        :'<div class="ev"><span class="tx" style="color:var(--faint)">No runs yet this session.</span></div>';
+    }
+    // fleet cards: real status, reset the fake "running/needs you" on idle agents
+    const by={};jobs.forEach(j=>{if(!by[j.agent]||j.started>by[j.agent].started)by[j.agent]=j;});
     document.querySelectorAll('#v-home .acard').forEach(c=>{
-      const id=(c.querySelector('.cid')||{}).textContent, j=by[id], now=c.querySelector('.now'); if(!j||!now)return;
-      const cls=j.status==='running'?'working':'idle';
-      now.innerHTML='<span class="dot '+cls+'"></span>'+(j.status==='running'?'running · '+((j.task||'')+'').slice(0,24):'idle');
+      const id=(c.querySelector('.cid')||{}).textContent, j=by[id], now=c.querySelector('.now'); if(!now)return;
+      const running=j&&j.status==='running';
+      c.classList.toggle('working',!!running); c.classList.remove('needs');
+      now.innerHTML='<span class="dot '+(running?'working':'idle')+'"></span>'+(running?'running · '+((j.task||'')+'').slice(0,24):'idle');
     });
     document.querySelectorAll('#v-home [data-ap]').forEach(b=>{b.onclick=()=>{if(confirm('Approve '+b.dataset.ap+'? This records your send authorization.'))api('/api/approve',{file:b.dataset.ap}).then(()=>poll());};});
   }
@@ -1001,24 +1086,40 @@
     const by={}; (s.jobs||[]).forEach(j=>{if(!by[j.agent]||j.started>by[j.agent].started)by[j.agent]=j;});
     document.querySelectorAll('.arow[data-go="console"]').forEach(row=>{
       const id=(row.querySelector('.id')||{}).textContent, j=by[id], dot=row.querySelector('.dot'), tk=row.querySelector('.task');
-      if(!j)return;
-      if(j.status==='running'){dot.className='dot working';tk.textContent='running · '+((j.task||j.tail||'working')+'').slice(0,30);}
-      else{dot.className='dot idle';tk.textContent=(j.status==='done'?'done · ':'')+((j.task||'idle')+'').slice(0,30);}
+      const running=j&&j.status==='running';
+      row.classList.toggle('working',!!running); row.classList.remove('needs');   // clear the static fake "running/needs you"
+      if(dot)dot.className='dot '+(running?'working':'idle');
+      if(tk)tk.textContent=running?('running · '+((j.task||j.tail||'working')+'').slice(0,30)):(j&&j.status==='done'?('done · '+((j.task||'')+'').slice(0,30)):'idle');
     });
+    const hbf=document.querySelector('.railfoot'); if(hbf)hbf.innerHTML='<span class="dot '+(s.heartbeat==='live'?'working':'idle')+'"></span><span>heartbeat · '+esc(s.heartbeat||'staged')+'</span>';
+    const liveN=(s.jobs||[]).filter(j=>j.status==='running').length;
+    const flc=document.querySelector('nav .grp .gc'); if(flc)flc.textContent=liveN+' live';
   }
   function renderConsole(s){
-    const mine=(s.jobs||[]).filter(j=>j.agent===current), j=mine[mine.length-1], tr=q('#v-console .transcript'); if(!tr||!j)return;
-    const rid=q('#v-console .rid'); if(rid)rid.innerHTML='run <b>#'+esc((j.id+'').slice(-6))+'</b> · '+esc(current);
-    const rm=q('#v-console .rmeta'); if(rm)rm.textContent='model claude · '+(j.tools||0)+' tool calls · '+j.status+(j.cost?(' · $'+j.cost):'');
-    const bd=q('#v-console .stbadge'); if(bd)bd.innerHTML='<span class="dot '+(j.status==='running'?'working':'idle')+'"></span> '+esc(j.status);
-    // run history (real jobs for this agent, most-recent first)
+    const tr=q('#v-console .transcript'); if(!tr)return;
+    const mine=(s.jobs||[]).filter(j=>j.agent===current), j=mine[mine.length-1];
+    // run history (real jobs for this agent, most-recent first) — always reflects the current agent
     const hist=q('#v-console .rhist');
     if(hist){const mine2=(s.jobs||[]).filter(x=>x.agent===current).slice(-6).reverse();
       hist.innerHTML='<h3><span>Run history</span><span>'+esc(current)+'</span></h3>'+
         (mine2.length?mine2.map(x=>{const cls=x.status==='running'?'live':(x.status==='done'?'done':'queued');
           return '<div class="hr '+cls+'"><span class="hi"></span><div><div class="hid mono">#'+esc((x.id+'').slice(-6))+'</div><div class="hd">'+esc(((x.task||'cycle run')+'').slice(0,54))+'</div><div class="ht mono">'+esc(x.started||'')+' · '+esc(x.status)+(x.cost?(' · $'+x.cost):'')+'</div></div></div>';}).join('')
-          :'<div class="hr"><div><div class="hd" style="color:var(--faint)">No runs yet for '+esc(current)+' this session. Assign a task above.</div></div></div>');
+          :'<div class="hr"><div><div class="hd" style="color:var(--faint)">No runs yet for '+esc(current)+'. Assign a task above.</div></div></div>');
     }
+    if(!j){   // no run for this agent → honest empty, wipe any stale runhead/replay/mock
+      activeJob=null; curEvents=[]; curJobId=null; replayIdx=null; stopReplay();
+      const rid=q('#v-console .rid'); if(rid)rid.innerHTML='run <b>—</b> · '+esc(current);
+      const rm=q('#v-console .rmeta'); if(rm)rm.textContent='no run yet';
+      const bd=q('#v-console .stbadge'); if(bd)bd.innerHTML='<span class="dot idle"></span> idle';
+      const el=document.getElementById('elapsed'); if(el)el.textContent='';
+      const rb=q('#v-console .replaybar'); if(rb)rb.remove();
+      if(!/Dispatching/.test(tr.innerHTML)) tr.innerHTML=EMPTY_TR();   // don't stomp a just-fired dispatch
+      return;
+    }
+    const rid=q('#v-console .rid'); if(rid)rid.innerHTML='run <b>#'+esc((j.id+'').slice(-6))+'</b> · '+esc(current);
+    const rm=q('#v-console .rmeta'); if(rm)rm.textContent='model claude · '+(j.tools||0)+' tool calls · '+j.status+(j.cost?(' · $'+j.cost):'');
+    const bd=q('#v-console .stbadge'); if(bd)bd.innerHTML='<span class="dot '+(j.status==='running'?'working':'idle')+'"></span> '+esc(j.status);
+    activeJob=(j.status==='running')?j.id:null;   // Stop button targets this
     if(j.id!==curJobId){curJobId=j.id;replayIdx=null;stopReplay();}   // new run → exit replay
     curEvents=j.events||[];
     buildReplayBar();
@@ -1078,7 +1179,7 @@
       if(ev.kind==='text'){h+='<div class="node"><div class="turn agent"><div class="tav">'+esc(current.slice(0,2).toUpperCase())+'</div><div class="tbody"><span class="say">'+esc((ev.text||'').slice(0,400))+'</span></div></div></div>';i++;}
       else if(ev.kind==='tool'){const rEv=(evs[i+1]&&evs[i+1].kind==='result')?evs[i+1]:null;h+=toolCard(ev,rEv);i+=rEv?2:1;}
       else if(ev.kind==='result'){i++;}
-      else if(ev.kind==='done'){const el=(ev.ts!=null)?' · '+ev.ts.toFixed(1)+'s':'';h+='<div class="node result"><div class="think mono">Run '+(ev.ok?'complete':'ended')+el+(ev.cost?(' · $'+ev.cost):'')+'. Drafts queued for approval.</div></div>';i++;}
+      else if(ev.kind==='done'){const el=(ev.ts!=null)?' · '+ev.ts.toFixed(1)+'s':'';h+='<div class="node result"><div class="think mono">Run '+(ev.ok?'complete':'ended')+el+(ev.cost?(' · $'+ev.cost):'')+'.</div></div>';i++;}
       else i++;
     }
     return h||'<div class="node"><div class="think mono">Working…</div></div>';
