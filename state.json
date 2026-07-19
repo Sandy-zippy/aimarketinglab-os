@@ -1,0 +1,34 @@
+{
+  "name": "AI Marketing Lab OS",
+  "updated": "2026-07-19 17:41",
+  "tier": "foundation",
+  "heartbeat": "staged",
+  "infra": {"brain":true,"whatsapp":true,"automation":true},
+  "stats": { "agents": 6, "skills": 88, "gates": 32, "queue": 1 },
+  "agents": [
+    { "id": "zayn",    "name": "Zayn",     "role": "Orchestrator",            "skills": 12,    "status": "ready" },
+    { "id": "steph",   "name": "Steph",    "role": "Outreach",               "skills": 20,   "status": "ready" },
+    { "id": "kyrie",   "name": "Kyrie",    "role": "Paid media + SEO",       "skills": 14,   "status": "ready" },
+    { "id": "drose",   "name": "D.Rose",   "role": "Design",                 "skills": 14,   "status": "ready" },
+    { "id": "antman",  "name": "Ant-Man",  "role": "Content",                "skills": 14,  "status": "ready" },
+    { "id": "ironman", "name": "Iron Man", "role": "CRM + automation",       "skills": 14, "status": "ready" }
+  ],
+  "kanban": {
+    "columns": ["Surfaced", "Researched", "Drafted", "Queued (approval)", "Approved", "Booked"],
+    "cards": [
+      { "col": "Queued (approval)", "agent": "steph", "label": "Warm re-engagement", "meta": "Construction developer · Lane A", "flag": "awaiting Sandy" }
+    ]
+  },
+  "gates": [
+    { "cat": "Outbound & approval", "n": 3, "sample": "Never send without explicit approval" },
+    { "cat": "Truth & fabrication", "n": 8, "sample": "Never invent case studies or numbers" },
+    { "cat": "Quality & QA",        "n": 8, "sample": "QA >= 8/10 before it ships" },
+    { "cat": "Format & deliverable","n": 9, "sample": "Formatted Docs, GitHub Pages only" },
+    { "cat": "Copy & brand",        "n": 9, "sample": "ZippyScale voice, no em dashes" },
+    { "cat": "Client & data",       "n": 7, "sample": "No credentials or PII in outputs" },
+    { "cat": "Execution",           "n": 4, "sample": "Autonomous after spec; max 2 revisions" }
+  ],
+  "runs": [
+    { "when": "2026-07-19 17:41", "agent": "steph", "note": "Outbound cycle: surfaced 2, drafted 1, skipped 1 (no earned wedge). 1 draft queued for approval. Nothing sent." }
+  ]
+}
