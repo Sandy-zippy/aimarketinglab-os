@@ -1011,6 +1011,14 @@
     const rid=q('#v-console .rid'); if(rid)rid.innerHTML='run <b>#'+esc((j.id+'').slice(-6))+'</b> · '+esc(current);
     const rm=q('#v-console .rmeta'); if(rm)rm.textContent='model claude · '+(j.tools||0)+' tool calls · '+j.status+(j.cost?(' · $'+j.cost):'');
     const bd=q('#v-console .stbadge'); if(bd)bd.innerHTML='<span class="dot '+(j.status==='running'?'working':'idle')+'"></span> '+esc(j.status);
+    // run history (real jobs for this agent, most-recent first)
+    const hist=q('#v-console .rhist');
+    if(hist){const mine2=(s.jobs||[]).filter(x=>x.agent===current).slice(-6).reverse();
+      hist.innerHTML='<h3><span>Run history</span><span>'+esc(current)+'</span></h3>'+
+        (mine2.length?mine2.map(x=>{const cls=x.status==='running'?'live':(x.status==='done'?'done':'queued');
+          return '<div class="hr '+cls+'"><span class="hi"></span><div><div class="hid mono">#'+esc((x.id+'').slice(-6))+'</div><div class="hd">'+esc(((x.task||'cycle run')+'').slice(0,54))+'</div><div class="ht mono">'+esc(x.started||'')+' · '+esc(x.status)+(x.cost?(' · $'+x.cost):'')+'</div></div></div>';}).join('')
+          :'<div class="hr"><div><div class="hd" style="color:var(--faint)">No runs yet for '+esc(current)+' this session. Assign a task above.</div></div></div>');
+    }
     if(j.id!==curJobId){curJobId=j.id;replayIdx=null;stopReplay();}   // new run → exit replay
     curEvents=j.events||[];
     buildReplayBar();
