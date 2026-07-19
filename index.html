@@ -899,6 +899,18 @@
     // activity stream
     const st=document.querySelector('#v-home .stream');
     if(st&&AG.length)st.innerHTML=AG.map(e=>'<div class="ev"><span class="t">'+esc(e.when||'')+'</span><span class="ag teal mono">'+esc(e.agent||'')+'</span><span class="tx">'+esc(e.event||'')+'</span></div>').join('');
+
+    // header counts + rail "live" tag from REAL state (no sample numbers)
+    const stx=s.stats||{}, liveN=(s.agents||[]).filter(a=>working(a.id)).length, needN=CARDS.length;
+    const cnt=document.querySelector('#v-home .counts');
+    if(cnt)cnt.innerHTML='<span class="c"><b>'+(stx.agents||6)+'</b> agents</span>'+
+      '<span class="c"><b>'+liveN+'</b> <em>live</em></span>'+
+      '<span class="c"><b>'+(stx.skills||0)+'</b> skills</span>'+
+      '<span class="c"><b>'+(stx.gates||0)+'</b> gates</span>'+
+      '<span class="c"><b>'+needN+'</b> <em>need you</em></span>'+
+      '<span class="c"><b>'+esc(stx.integrations||'')+'</b> integrations</span>';
+    const flc=document.querySelector('nav .grp .gc'); if(flc)flc.textContent=liveN+' live';
+    const hbf=document.querySelector('.railfoot'); if(hbf)hbf.innerHTML='<span class="dot '+(s.heartbeat==='live'?'working':'idle')+'"></span><span>heartbeat · '+esc(s.heartbeat||'staged')+'</span>';
   }
   function init(){
     document.body.setAttribute('data-live','1');
