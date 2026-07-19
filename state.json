@@ -1,34 +1,59 @@
 {
-  "name": "AI Marketing Lab OS",
-  "updated": "2026-07-19 17:41",
-  "tier": "foundation",
-  "heartbeat": "staged",
-  "infra": {"brain":true,"whatsapp":true,"automation":true},
-  "stats": { "agents": 6, "skills": 88, "gates": 32, "queue": 1 },
-  "agents": [
-    { "id": "zayn",    "name": "Zayn",     "role": "Orchestrator",            "skills": 12,    "status": "ready" },
-    { "id": "steph",   "name": "Steph",    "role": "Outreach",               "skills": 20,   "status": "ready" },
-    { "id": "kyrie",   "name": "Kyrie",    "role": "Paid media + SEO",       "skills": 14,   "status": "ready" },
-    { "id": "drose",   "name": "D.Rose",   "role": "Design",                 "skills": 14,   "status": "ready" },
-    { "id": "antman",  "name": "Ant-Man",  "role": "Content",                "skills": 14,  "status": "ready" },
-    { "id": "ironman", "name": "Iron Man", "role": "CRM + automation",       "skills": 14, "status": "ready" }
+  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-19 19:36","tier":"foundation",
+  "heartbeat":"staged","infra":{"brain":true,"whatsapp":true,"automation":true},
+  "spine":["system.md","invariants.md","agency.yaml","brain/connect.md"],
+  "stats":{"os":6,"agents":6,"skills":88,"gates":32,"queue":1,"integrations":"3/3"},
+  "os":[
+    {"id":"founder-os","label":"Founder OS","agent":"zayn","role":"Orchestrator","hb":"ready",
+     "counts":[["agents",6],["skills",88],["gates",32],["queued",1]],
+     "desc":"The shell. Dispatches the fleet, holds the missions board, the digest, the activity stream."},
+    {"id":"outreach-os","label":"Outreach OS","agent":"steph","role":"Outreach","hb":"ready",
+     "counts":[["skills",20],["queued",1],["pilots","0/3"]],
+     "desc":"Surface, research, draft, queue. Every send stops for approval. Offer is DRAFT: drafts only."},
+    {"id":"growth-os","label":"Growth OS","agent":"kyrie","role":"Paid media + SEO","hb":"ready",
+     "counts":[["skills",14],["campaigns",0],["live spend","0"]],
+     "desc":"Meta + Google + SEO. Campaign specs drafted and queued. No spend without approval."},
+    {"id":"content-os","label":"Content OS","agent":"antman","role":"Content","hb":"ready",
+     "counts":[["skills",14],["queued",0],["published",0]],
+     "desc":"IG / X / LinkedIn / YouTube. Hook to draft to review. Never publishes on its own."},
+    {"id":"design-os","label":"Design OS","agent":"drose","role":"Design","hb":"ready",
+     "counts":[["skills",14],["queued",0],["QA floor","8/10"]],
+     "desc":"Landing pages, creatives, decks. Rendered, QA'd, queued. Nothing ships to live without a go."},
+    {"id":"ops-os","label":"Ops OS","agent":"ironman","role":"CRM + automation","hb":"ready",
+     "counts":[["skills",14],["integrations","3/3"],["invoices",0]],
+     "desc":"CRM, automations, invoicing, integration health. Tests one real lead before anything goes live."}
   ],
-  "kanban": {
-    "columns": ["Surfaced", "Researched", "Drafted", "Queued (approval)", "Approved", "Booked"],
-    "cards": [
-      { "col": "Queued (approval)", "agent": "steph", "label": "Warm re-engagement", "meta": "Construction developer · Lane A", "flag": "awaiting Sandy" }
-    ]
+  "system":[
+    {"id":"brain-os","label":"Brain OS","counts":[["pages",1523],["embedded","100%"],["engine","postgres"]],
+     "desc":"The second brain: gBrain (local free embeddings) + Obsidian vault. The context every agent reads."},
+    {"id":"kernel","label":"Kernel","counts":[["invariants",32],["categories",7],["spine",4]],
+     "desc":"The spine: CLAUDE.md, SYSTEM.md, INVARIANTS.md, agency.yaml. Judgment encoded as blocking gates."},
+    {"id":"schedules","label":"Schedules","counts":[["heartbeat","staged"],["daily","08:30"],["weekly","Mon 09:00"]],
+     "desc":"The always-on layer. External scheduler wakes headless runs; drafts queue; nothing sends."}
+  ],
+  "agents":[
+    {"id":"zayn","os":"founder-os","role":"Orchestrator","skills":12,"hb":"ready","now":"idle"},
+    {"id":"steph","os":"outreach-os","role":"Outreach","skills":20,"hb":"ready","now":"1 draft queued"},
+    {"id":"kyrie","os":"growth-os","role":"Paid media + SEO","skills":14,"hb":"ready","now":"idle"},
+    {"id":"drose","os":"design-os","role":"Design","skills":14,"hb":"ready","now":"idle"},
+    {"id":"antman","os":"content-os","role":"Content","skills":14,"hb":"ready","now":"idle"},
+    {"id":"ironman","os":"ops-os","role":"CRM + automation","skills":14,"hb":"ready","now":"idle"}
+  ],
+  "missions":{
+    "columns":["Surfaced","Researched","Drafted","Review","Queued","Booked"],
+    "cards":[{"col":"Queued","os":"outreach-os","agent":"steph","label":"Warm re-engagement","meta":"Construction developer · Lane A","flag":"awaiting approval"}]
   },
-  "gates": [
-    { "cat": "Outbound & approval", "n": 3, "sample": "Never send without explicit approval" },
-    { "cat": "Truth & fabrication", "n": 8, "sample": "Never invent case studies or numbers" },
-    { "cat": "Quality & QA",        "n": 8, "sample": "QA >= 8/10 before it ships" },
-    { "cat": "Format & deliverable","n": 9, "sample": "Formatted Docs, GitHub Pages only" },
-    { "cat": "Copy & brand",        "n": 9, "sample": "ZippyScale voice, no em dashes" },
-    { "cat": "Client & data",       "n": 7, "sample": "No credentials or PII in outputs" },
-    { "cat": "Execution",           "n": 4, "sample": "Autonomous after spec; max 2 revisions" }
+  "activity":[
+    {"when":"2026-07-19 19:36","agent":"steph","event":"Outbound cycle: surfaced 2, drafted 1, skipped 1 (no earned wedge). 1 draft queued. Nothing sent."},
+    {"when":"2026-07-19 19:36","agent":"system","event":"Heartbeat staged. Brain, WhatsApp, automation: 3/3 up."}
   ],
-  "runs": [
-    { "when": "2026-07-19 17:41", "agent": "steph", "note": "Outbound cycle: surfaced 2, drafted 1, skipped 1 (no earned wedge). 1 draft queued for approval. Nothing sent." }
+  "gates":[
+    {"cat":"Outbound & approval","n":3,"sample":"Never send without explicit approval"},
+    {"cat":"Truth & fabrication","n":8,"sample":"Never invent case studies or numbers"},
+    {"cat":"Quality & QA","n":8,"sample":"QA >= 8/10 before it ships"},
+    {"cat":"Format & deliverable","n":9,"sample":"Formatted Docs, GitHub Pages only"},
+    {"cat":"Copy & brand","n":9,"sample":"ZippyScale voice, no em dashes"},
+    {"cat":"Client & data","n":7,"sample":"No credentials or PII in outputs"},
+    {"cat":"Execution","n":4,"sample":"Autonomous after spec; max 2 revisions"}
   ]
 }

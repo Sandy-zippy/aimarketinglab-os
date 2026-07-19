@@ -1,227 +1,340 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Marketing Lab OS</title>
-<meta name="description" content="An AI growth fleet that runs a real marketing agency: six agents, hard governance gates, honest run logs. A working operating system, not a template.">
+<meta name="description" content="An AI marketing operating system that runs a real agency. Six agents across named workspaces, hard governance gates, honest run logs. A system you operate, not a template you fill in.">
 <link rel="canonical" href="https://os.aimarketinglabs.in/">
 <meta property="og:title" content="AI Marketing Lab OS">
-<meta property="og:description" content="An AI growth fleet that runs a real marketing agency: six agents, hard governance gates, honest run logs. A working operating system, not a template.">
+<meta property="og:description" content="An AI marketing operating system that runs a real agency: workspaces, agents, governance gates, honest run logs.">
 <meta property="og:url" content="https://os.aimarketinglabs.in/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#FFFDF7; --charcoal:#2A2A35; --lime:#D5EB4B; --lime-deep:#c3da34;
-    --ink:#2A2A35; --muted:#6b6b78; --line:#e9e6dc; --card:#fffefb; --shadow:0 1px 2px rgba(42,42,53,.06),0 8px 24px rgba(42,42,53,.05);
-    --bg:var(--cream);
+    --bg:oklch(0.19 0.015 285); --panel:oklch(0.225 0.016 285); --panel2:oklch(0.255 0.017 285);
+    --line:oklch(0.32 0.016 285); --line2:oklch(0.4 0.018 285);
+    --ink:oklch(0.95 0.008 95); --dim:oklch(0.72 0.012 285); --faint:oklch(0.56 0.014 285);
+    --lime:oklch(0.9 0.19 118); --lime-ink:oklch(0.28 0.05 130);
+    --ok:oklch(0.78 0.14 155); --warn:oklch(0.8 0.13 80);
+    --rail:248px;
   }
-  @media (prefers-color-scheme:dark){
-    :root{ --bg:#1e1e26; --ink:#f3f1ea; --muted:#a2a1ad; --line:#34343f; --card:#26262f; --charcoal:#f3f1ea; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); }
+  :root[data-theme="light"]{
+    --bg:oklch(0.985 0.008 95); --panel:oklch(0.995 0.006 95); --panel2:oklch(0.965 0.008 95);
+    --line:oklch(0.9 0.01 95); --line2:oklch(0.84 0.012 95);
+    --ink:oklch(0.28 0.02 285); --dim:oklch(0.46 0.02 285); --faint:oklch(0.62 0.018 285);
+    --lime:oklch(0.86 0.2 118); --lime-ink:oklch(0.32 0.06 130);
   }
-  :root[data-theme="dark"]{ --bg:#1e1e26; --ink:#f3f1ea; --muted:#a2a1ad; --line:#34343f; --card:#26262f; --charcoal:#f3f1ea; --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); }
-  :root[data-theme="light"]{ --bg:#FFFDF7; --ink:#2A2A35; --muted:#6b6b78; --line:#e9e6dc; --card:#fffefb; --charcoal:#2A2A35; --shadow:0 1px 2px rgba(42,42,53,.06),0 8px 24px rgba(42,42,53,.05); }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-  h1,h2,h3,.mono-h{font-family:'Space Grotesk',sans-serif}
-  .mono{font-family:'JetBrains Mono',monospace}
-  a{color:inherit}
-  /* top bar */
-  header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  .bar{display:flex;align-items:center;gap:14px;height:60px}
-  .logo{display:flex;align-items:center;gap:9px;font-family:'Space Grotesk';font-weight:700;font-size:16px;letter-spacing:-.01em}
-  .spark{width:26px;height:26px;border-radius:7px;background:var(--lime);display:grid;place-items:center;color:#2A2A35;font-weight:700}
-  .live{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted);margin-left:auto}
-  .dot{width:8px;height:8px;border-radius:50%;background:#3ec46d;box-shadow:0 0 0 3px rgba(62,196,109,.18)}
-  .dot.warn{background:#e0a63b;box-shadow:0 0 0 3px rgba(224,166,59,.18)}
-  .dot.off{background:#c96;box-shadow:none}
-  .themebtn{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:14px}
-  /* hero */
-  .hero{padding:48px 0 30px}
-  .kick{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--card);border:1px solid var(--line);padding:5px 11px;border-radius:100px}
-  .hero h1{font-size:clamp(30px,5vw,50px);font-weight:700;letter-spacing:-.025em;margin:16px 0 12px;line-height:1.04}
-  .hero h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--lime) 62%)}
-  .hero p{font-size:clamp(16px,2vw,19px);color:var(--muted);max-width:640px}
-  /* stat tiles */
-  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0 8px}
-  .tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
-  .tile .n{font-family:'JetBrains Mono';font-weight:700;font-size:30px;letter-spacing:-.02em}
-  .tile .l{font-size:12.5px;color:var(--muted);margin-top:2px}
-  .tile .sub{font-size:11.5px;color:var(--muted);margin-top:9px;display:flex;gap:10px;flex-wrap:wrap}
-  .pill{display:inline-flex;align-items:center;gap:5px}
-  .pd{width:7px;height:7px;border-radius:50%;background:#3ec46d}
-  .pd.off{background:#c96}
-  section{padding:30px 0}
-  .sec-h{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
-  .sec-h h2{font-size:21px;font-weight:600;letter-spacing:-.02em}
-  .sec-h span{font-size:13px;color:var(--muted)}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;font-feature-settings:"cv02","cv11"}
+  .mono{font-family:'JetBrains Mono',monospace;font-feature-settings:normal}
+  h1,h2,h3,.disp{font-family:'Space Grotesk',sans-serif;letter-spacing:-.01em}
+  ::selection{background:var(--lime);color:var(--lime-ink)}
+  button{font-family:inherit;cursor:pointer}
+  a{color:inherit;text-decoration:none}
+
+  /* shell */
+  .app{display:grid;grid-template-columns:var(--rail) 1fr;height:100vh}
+  .rail{border-right:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;overflow-y:auto}
+  .brand{padding:16px 18px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:5}
+  .brand .b1{display:flex;align-items:center;gap:9px}
+  .mark{width:24px;height:24px;border-radius:6px;background:var(--lime);color:var(--lime-ink);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+  .brand .nm{font-family:'Space Grotesk';font-weight:700;font-size:14px}
+  .boot{margin-top:9px;font-size:11px}
+  .boot .p{color:var(--lime)} .boot .c{color:var(--faint)}
+  .cursor{display:inline-block;width:6px;height:12px;background:var(--lime);vertical-align:-1px;margin-left:2px;animation:blink 1.1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  nav{padding:12px 10px;flex:1}
+  .grp{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);padding:12px 10px 7px}
+  .item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--dim);cursor:pointer;position:relative}
+  .item:hover{background:var(--panel2);color:var(--ink)}
+  .item.on{background:var(--panel2);color:var(--ink)}
+  .item.on::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--lime)}
+  .item .ic{width:18px;text-align:center;font-size:13px;flex:none;color:var(--faint)}
+  .item.on .ic{color:var(--lime)}
+  .item .lb{flex:1;font-size:13px;font-weight:450}
+  .item .ct{font-family:'JetBrains Mono';font-size:10.5px;color:var(--faint)}
+  .hbdot{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:none}
+  .hbdot.pulse{background:var(--lime);animation:pulse 1.8s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in oklch,var(--lime) 60%,transparent)}70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  .railfoot{padding:12px 16px;border-top:1px solid var(--line);font-size:11px;color:var(--faint);display:flex;align-items:center;gap:8px}
+
+  /* main */
+  .main{overflow-y:auto;position:relative}
+  .top{position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:14px;padding:0 24px;height:52px;border-bottom:1px solid var(--line);background:color-mix(in oklch,var(--bg) 82%,transparent);backdrop-filter:blur(8px)}
+  .top .path{font-family:'JetBrains Mono';font-size:12px;color:var(--dim)}
+  .top .path b{color:var(--ink);font-weight:500}
+  .cmdk{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--faint);border:1px solid var(--line);border-radius:8px;padding:5px 9px;cursor:pointer}
+  .cmdk:hover{border-color:var(--line2);color:var(--dim)}
+  .kbd{font-family:'JetBrains Mono';font-size:10.5px;border:1px solid var(--line2);border-radius:4px;padding:1px 5px}
+  .tbtn{border:1px solid var(--line);background:none;color:var(--faint);border-radius:8px;width:30px;height:30px;font-size:14px}
+  .tbtn:hover{color:var(--ink);border-color:var(--line2)}
+  .live{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--dim);font-family:'JetBrains Mono'}
+
+  .view{padding:26px 24px 60px;max-width:1120px}
+  .vhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:5px}
+  .vhead h1{font-size:24px;font-weight:700}
+  .vhead .who{font-size:12px;color:var(--faint);font-family:'JetBrains Mono'}
+  .counts{font-family:'JetBrains Mono';font-size:12px;color:var(--dim);margin:10px 0 4px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .counts .c{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:3px 9px}
+  .counts .c b{color:var(--ink);font-weight:700} .counts .c span{color:var(--lime)}
+  .lead{color:var(--dim);font-size:14px;max-width:70ch;margin:12px 0 22px;line-height:1.6}
+
+  .sec{margin:26px 0}
+  .sec>h2{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:12px;font-family:'JetBrains Mono';font-weight:500}
+
+  /* fleet */
+  .fleet{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .acard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .15s}
+  .acard:hover{border-color:var(--line2)}
+  .acard .r1{display:flex;align-items:center;gap:10px}
+  .av{width:34px;height:34px;border-radius:9px;background:var(--panel2);border:1px solid var(--line2);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:13px;flex:none}
+  .acard .id{font-family:'Space Grotesk';font-weight:600;font-size:14px;text-transform:capitalize}
+  .acard .rl{font-size:11.5px;color:var(--faint)}
+  .acard .sk{margin-left:auto;font-family:'JetBrains Mono';font-size:11px;color:var(--faint)}
+  .acard .now{margin-top:11px;font-size:12px;color:var(--dim);display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono'}
+
   /* kanban */
-  .board{display:grid;grid-template-columns:repeat(6,minmax(150px,1fr));gap:12px;overflow-x:auto;padding-bottom:6px}
-  .col{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:150px}
-  .col-h{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:11px;text-transform:uppercase;letter-spacing:.03em}
-  .col-h .c{font-family:'JetBrains Mono';background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:1px 8px;font-size:11px}
-  .kc{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px;margin-bottom:9px}
-  .kc.hot{border-color:var(--lime-deep);box-shadow:0 0 0 2px rgba(213,235,75,.35)}
-  .kc .who{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
-  .kc .lbl{font-size:13.5px;font-weight:600;margin:3px 0}
-  .kc .meta{font-size:11.5px;color:var(--muted)}
-  .kc .flag{display:inline-block;margin-top:7px;font-size:10.5px;font-weight:700;color:#2A2A35;background:var(--lime);padding:2px 8px;border-radius:20px}
-  .empty{font-size:12px;color:var(--muted);opacity:.6;padding:8px 2px}
-  /* agents */
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-  .agent{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);display:flex;gap:13px;align-items:center}
-  .av{width:42px;height:42px;border-radius:11px;background:var(--charcoal);color:var(--bg);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:15px;flex:none}
-  .agent .nm{font-family:'Space Grotesk';font-weight:600;font-size:15px}
-  .agent .rl{font-size:12.5px;color:var(--muted)}
-  .agent .sk{margin-left:auto;text-align:right;flex:none}
-  .agent .sk b{font-family:'JetBrains Mono';font-size:15px}
-  .agent .sk small{display:block;font-size:10.5px;color:var(--muted)}
-  /* gates */
-  .gates{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  .gate{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;gap:13px;align-items:center}
-  .gate .gn{font-family:'JetBrains Mono';font-weight:700;font-size:18px;color:var(--lime-deep);min-width:26px}
-  .gate .gc{font-weight:600;font-size:14px}
-  .gate .gs{font-size:12px;color:var(--muted)}
-  /* diff */
-  .diff{background:var(--charcoal);color:var(--bg);border-radius:18px;padding:30px}
-  :root[data-theme="dark"] .diff,@media (prefers-color-scheme:dark){.diff{border:1px solid var(--line)}}
-  .diff h2{font-size:22px;margin-bottom:6px}
-  .diff .lead{opacity:.8;font-size:15px;max-width:660px;margin-bottom:20px}
-  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .dc{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px}
-  .dc.ours{background:var(--lime);color:#2A2A35;border:none}
-  .dc h4{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;opacity:.85}
-  .dc ul{list-style:none;font-size:13.5px}
-  .dc li{padding:5px 0 5px 20px;position:relative}
-  .dc li::before{content:"";position:absolute;left:0;top:11px;width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.5}
-  .dc.ours li::before{opacity:1}
-  /* runs */
-  .run{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;gap:14px}
-  .run .rt{font-family:'JetBrains Mono';font-size:11.5px;color:var(--muted);white-space:nowrap;padding-top:2px}
-  .run .rag{font-family:'Space Grotesk';font-weight:600;font-size:13px}
-  .run .rn{font-size:13.5px;color:var(--muted)}
-  footer{border-top:1px solid var(--line);margin-top:20px;padding:26px 0;color:var(--muted);font-size:13px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-  .note{font-size:12px;color:var(--muted);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 13px;margin-top:12px}
-  @media(max-width:820px){ .tiles{grid-template-columns:repeat(2,1fr)} .grid,.gates,.cols2{grid-template-columns:1fr} }
+  .board{display:grid;grid-template-columns:repeat(6,minmax(140px,1fr));gap:10px;overflow-x:auto;padding-bottom:6px}
+  .col{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:10px;min-height:120px}
+  .colh{display:flex;justify-content:space-between;align-items:center;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);margin-bottom:10px;font-family:'JetBrains Mono'}
+  .colh .n{background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:0 7px;font-size:10px}
+  .kc{background:var(--panel2);border:1px solid var(--line2);border-radius:9px;padding:10px;margin-bottom:8px}
+  .kc.hot{border-color:var(--lime);box-shadow:inset 0 0 0 1px color-mix(in oklch,var(--lime) 30%,transparent)}
+  .kc .who{font-family:'JetBrains Mono';font-size:10px;color:var(--faint);text-transform:uppercase}
+  .kc .t{font-size:13px;font-weight:600;margin:3px 0}
+  .kc .m{font-size:11.5px;color:var(--dim)}
+  .kc .fl{display:inline-block;margin-top:7px;font-size:10px;font-weight:700;color:var(--lime-ink);background:var(--lime);border-radius:20px;padding:2px 8px}
+  .cempty{color:var(--faint);font-size:11px;opacity:.5;padding:6px 2px;font-family:'JetBrains Mono'}
+
+  /* activity */
+  .stream{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .ev{display:flex;gap:14px;padding:12px 15px;border-bottom:1px solid var(--line);font-size:13px}
+  .ev:last-child{border-bottom:none}
+  .ev .t{font-family:'JetBrains Mono';font-size:11px;color:var(--faint);white-space:nowrap;padding-top:1px}
+  .ev .ag{font-family:'JetBrains Mono';font-size:11px;color:var(--lime);min-width:56px}
+  .ev .tx{color:var(--dim)}
+
+  /* agent panel (per-os) */
+  .apanel{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px}
+  .apanel .big{width:40px;height:40px;border-radius:10px;background:var(--panel2);border:1px solid var(--line2);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700}
+  .apanel .nm{font-family:'Space Grotesk';font-weight:600;font-size:15px;text-transform:capitalize}
+  .apanel .su{font-size:12px;color:var(--faint)}
+  .runbtn{margin-left:auto;font-size:12.5px;font-weight:600;border:1px solid var(--line2);background:var(--panel2);color:var(--dim);border-radius:8px;padding:8px 13px;display:flex;align-items:center;gap:7px}
+  .runbtn:hover{border-color:var(--lime);color:var(--ink)}
+
+  /* kernel gates */
+  .gates{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .gate{display:flex;gap:13px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:13px 15px}
+  .gate .gn{font-family:'JetBrains Mono';font-weight:700;font-size:17px;color:var(--lime);min-width:24px}
+  .gate .gc{font-weight:600;font-size:13.5px} .gate .gs{font-size:12px;color:var(--faint)}
+  .spine{display:flex;gap:8px;flex-wrap:wrap}
+  .file{font-family:'JetBrains Mono';font-size:12px;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:5px 10px}
+  .file::before{content:"▸ ";color:var(--lime)}
+
+  /* generic panel + note */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+  .note{font-size:12.5px;color:var(--faint);border:1px dashed var(--line2);border-radius:10px;padding:12px 14px;line-height:1.55}
+  .diff{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+  .dc{border:1px solid var(--line);border-radius:11px;padding:15px}
+  .dc.ours{background:var(--lime);color:var(--lime-ink);border:none}
+  .dc h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px;font-family:'JetBrains Mono';opacity:.8}
+  .dc li{list-style:none;font-size:13px;padding:4px 0 4px 16px;position:relative}
+  .dc li::before{content:"–";position:absolute;left:0;opacity:.6}
+
+  /* command palette */
+  .scrim{position:fixed;inset:0;background:oklch(0.12 0.01 285/.6);backdrop-filter:blur(3px);display:none;z-index:50;align-items:flex-start;justify-content:center;padding-top:12vh}
+  .scrim.open{display:flex}
+  .pal{width:560px;max-width:92vw;background:var(--panel);border:1px solid var(--line2);border-radius:14px;overflow:hidden;box-shadow:0 24px 80px oklch(0.1 0.01 285/.5)}
+  .pal input{width:100%;border:none;background:none;color:var(--ink);font-family:'JetBrains Mono';font-size:14px;padding:16px 18px;border-bottom:1px solid var(--line);outline:none}
+  .plist{max-height:340px;overflow-y:auto;padding:6px}
+  .prow{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+  .prow.sel{background:var(--panel2)}
+  .prow .ic{width:16px;text-align:center;color:var(--faint)}
+  .prow .k{margin-left:auto;font-family:'JetBrains Mono';font-size:10px;color:var(--faint)}
+  .prow .sub{color:var(--faint);font-size:11.5px}
+
+  @media(max-width:900px){
+    .app{grid-template-columns:1fr}
+    .rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail);z-index:40;transform:translateX(-100%);transition:transform .2s}
+    .rail.open{transform:none}
+    .fleet,.gates,.diff{grid-template-columns:1fr}
+    .menub{display:grid!important}
+  }
+  .menub{display:none;place-items:center;width:30px;height:30px;border:1px solid var(--line);border-radius:8px;background:none;color:var(--ink);font-size:15px}
 </style>
 </head>
 <body>
-<header><div class="wrap bar">
-  <div class="logo"><span class="spark">◆</span> AI Marketing Lab <span style="color:var(--muted);font-weight:500">OS</span></div>
-  <div class="live"><span class="dot" id="livedot"></span><span id="livetxt">live</span> · <span class="mono" id="updated">—</span></div>
-  <button class="themebtn" id="theme" title="Toggle theme">◐</button>
-</div></header>
-
-<div class="wrap">
-  <div class="hero">
-    <span class="kick">Built &amp; run in the open</span>
-    <h1>An AI growth fleet that <em>runs the agency</em>.</h1>
-    <p>Six specialist agents on one brain, with hard governance gates and honest run logs. Not a template you fill in. A working operating system that does the outreach, the ads, the content, and the delivery, and queues every send for one human approval.</p>
-  </div>
-
-  <div class="tiles" id="tiles"></div>
-  <div class="note" id="privnote">This is the public view. Prospect names, draft contents, client data, and pricing stay private. The engine runs locally, this dashboard shows only the OS at work.</div>
-</div>
-
-<div class="wrap">
-  <section>
-    <div class="sec-h"><h2>Pipeline</h2><span>every draft stops at approval. Sandy is the send button</span></div>
-    <div class="board" id="board"></div>
-  </section>
-
-  <section>
-    <div class="sec-h"><h2>The fleet</h2><span id="skilltot"></span></div>
-    <div class="grid" id="agents"></div>
-  </section>
-
-  <section>
-    <div class="sec-h"><h2>Governance</h2><span>judgment encoded as gates that block bad output, the real IP</span></div>
-    <div class="gates" id="gates"></div>
-  </section>
-
-  <section>
-    <div class="diff">
-      <h2>Why this isn't a template</h2>
-      <p class="lead">Most "AI agency OS" products are folders of prompts you fill in and hope work. This one is proven by running a live agency in the open. The results are the case study.</p>
-      <div class="cols2">
-        <div class="dc"><h4>A template</h4><ul>
-          <li>Prompts you configure yourself</li>
-          <li>Unverified claims of results</li>
-          <li>No memory, no proof it ran</li>
-          <li>You are the safety net</li>
-        </ul></div>
-        <div class="dc ours"><h4>This OS</h4><ul>
-          <li>Runs a real agency, live</li>
-          <li>Honest run logs, every action recorded</li>
-          <li>A postgres brain + gate-checked judgment</li>
-          <li>Never sends without your word</li>
-        </ul></div>
-      </div>
+<div class="app">
+  <aside class="rail" id="rail">
+    <div class="brand">
+      <div class="b1"><span class="mark">◆</span><span class="nm">AI Marketing Lab OS</span></div>
+      <div class="boot mono"><span class="p">›</span> <span class="c">boot</span> <span id="bootname">aimarketinglab</span>/<span class="cursor"></span></div>
     </div>
-  </section>
+    <nav id="nav"></nav>
+    <div class="railfoot"><span class="hbdot pulse" id="rf-dot"></span><span class="mono" id="rf-hb">heartbeat</span></div>
+  </aside>
 
-  <section>
-    <div class="sec-h"><h2>Honest run log</h2><span>a run that isn't logged didn't happen</span></div>
-    <div id="runs"></div>
-  </section>
+  <main class="main">
+    <div class="top">
+      <button class="menub" id="menub">☰</button>
+      <div class="path mono">os / <b id="crumb">founder-os</b></div>
+      <div class="cmdk" id="cmdkBtn">Search &amp; jump <span class="kbd">⌘K</span></div>
+      <div class="live"><span class="hbdot pulse"></span><span id="topupd">—</span></div>
+      <button class="tbtn" id="theme" title="Theme">◐</button>
+    </div>
+    <div class="view" id="view"></div>
+  </main>
 </div>
 
-<footer><div class="wrap" style="display:flex;gap:14px;flex-wrap:wrap;width:100%">
-  <span><b style="color:var(--ink)">AI Marketing Lab OS</b> · The ZippyScale Team</span>
-  <span style="margin-left:auto" class="mono" id="foot">—</span>
-</div></footer>
+<div class="scrim" id="scrim"><div class="pal">
+  <input id="palIn" placeholder="Jump to a workspace, an agent, or a command…" autocomplete="off">
+  <div class="plist" id="plist"></div>
+</div></div>
 
 <script>
-const FALLBACK={name:"AI Marketing Lab OS",updated:"—",heartbeat:"staged",infra:{brain:true,whatsapp:true,automation:true},stats:{agents:6,skills:88,gates:32,queue:1},agents:[{name:"Zayn",role:"Orchestrator",skills:12},{name:"Steph",role:"Outreach",skills:20},{name:"Kyrie",role:"Paid media + SEO",skills:14},{name:"D.Rose",role:"Design",skills:14},{name:"Ant-Man",role:"Content",skills:14},{name:"Iron Man",role:"CRM + automation",skills:14}],kanban:{columns:["Surfaced","Researched","Drafted","Queued (approval)","Approved","Booked"],cards:[{col:"Queued (approval)",agent:"steph",label:"Warm re-engagement",meta:"Construction developer · Lane A",flag:"awaiting Sandy"}]},gates:[{cat:"Outbound & approval",n:3,sample:"Never send without explicit approval"},{cat:"Truth & fabrication",n:8,sample:"Never invent case studies or numbers"},{cat:"Quality & QA",n:8,sample:"QA >= 8/10 before it ships"},{cat:"Format & deliverable",n:9,sample:"Formatted Docs, GitHub Pages only"},{cat:"Copy & brand",n:9,sample:"ZippyScale voice, no em dashes"},{cat:"Client & data",n:7,sample:"No credentials or PII in outputs"},{cat:"Execution",n:4,sample:"Autonomous after spec; max 2 revisions"}],runs:[{when:"—",agent:"steph",note:"Outbound cycle: surfaced 2, drafted 1, skipped 1. 1 draft queued for approval. Nothing sent."}]};
-const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
-function render(s){
-  document.getElementById('updated').textContent=s.updated;
-  document.getElementById('foot').textContent='updated '+s.updated+' · tier '+(s.tier||'foundation');
-  const hb=s.heartbeat==='live';
-  document.getElementById('livedot').className='dot'+(hb?'':' warn');
-  document.getElementById('livetxt').textContent=hb?'heartbeat live':'heartbeat staged';
-  // tiles
-  const inf=s.infra||{}, up=v=>`<span class="pill"><span class="pd${v?'':' off'}"></span>`;
-  document.getElementById('tiles').innerHTML=`
-    <div class="tile"><div class="n">${s.stats.agents}</div><div class="l">agents</div></div>
-    <div class="tile"><div class="n">${s.stats.skills}</div><div class="l">skills</div></div>
-    <div class="tile"><div class="n">${s.stats.gates}</div><div class="l">governance gates</div></div>
-    <div class="tile"><div class="n">${s.stats.queue}</div><div class="l">awaiting approval</div>
-      <div class="sub">${up(inf.brain)}brain</span>${up(inf.whatsapp)}whatsapp</span>${up(inf.automation)}n8n</span></div></div>`;
-  // kanban
-  const board=document.getElementById('board'); board.innerHTML='';
-  s.kanban.columns.forEach(col=>{
-    const cards=s.kanban.cards.filter(c=>c.col===col);
-    const c=el('div','col');
-    c.appendChild(el('div','col-h',`<span>${col}</span><span class="c">${cards.length}</span>`));
-    if(!cards.length) c.appendChild(el('div','empty','—'));
-    cards.forEach(k=>c.appendChild(el('div','kc'+(k.flag?' hot':''),
-      `<div class="who">${k.agent}</div><div class="lbl">${k.label}</div><div class="meta">${k.meta||''}</div>${k.flag?`<span class="flag">${k.flag}</span>`:''}`)));
-    board.appendChild(c);
-  });
-  // agents
-  document.getElementById('skilltot').textContent=s.stats.skills+' skills across six roles';
-  document.getElementById('agents').innerHTML=s.agents.map(a=>{
-    const ini=a.name.replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase();
-    return `<div class="agent"><div class="av">${ini}</div><div><div class="nm">${a.name}</div><div class="rl">${a.role}</div></div><div class="sk"><b>${a.skills}</b><small>skills</small></div></div>`;
-  }).join('');
-  // gates
-  document.getElementById('gates').innerHTML=s.gates.map(g=>
-    `<div class="gate"><div class="gn">${g.n}</div><div><div class="gc">${g.cat}</div><div class="gs">${g.sample}</div></div></div>`).join('');
-  // runs
-  document.getElementById('runs').innerHTML=s.runs.map(r=>
-    `<div class="run"><div class="rt">${r.when}</div><div><span class="rag">${r.agent}</span> &nbsp;<span class="rn">${r.note}</span></div></div>`).join('');
+const $=s=>document.querySelector(s), ce=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
+const esc=s=>(s==null?'':(''+s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const ICON={'founder-os':'⌂','outreach-os':'◈','growth-os':'▲','content-os':'✎','design-os':'◐','ops-os':'⚙','brain-os':'❖','kernel':'⌘','schedules':'◷'};
+let S=null, cur='founder-os';
+
+const FB={name:"AI Marketing Lab OS",boot:"aimarketinglab",updated:"—",heartbeat:"staged",infra:{brain:true,whatsapp:true,automation:true},spine:["system.md","invariants.md","agency.yaml","brain/connect.md"],stats:{os:6,agents:6,skills:88,gates:32,queue:1,integrations:"3/3"},os:[{id:"founder-os",label:"Founder OS",agent:"zayn",role:"Orchestrator",counts:[["agents",6],["skills",88],["gates",32],["queued",1]],desc:"The shell. Dispatches the fleet, holds the missions board, the digest, the activity stream."},{id:"outreach-os",label:"Outreach OS",agent:"steph",role:"Outreach",counts:[["skills",20],["queued",1],["pilots","0/3"]],desc:"Surface, research, draft, queue. Every send stops for approval."},{id:"growth-os",label:"Growth OS",agent:"kyrie",role:"Paid media + SEO",counts:[["skills",14],["campaigns",0]],desc:"Meta + Google + SEO. No spend without approval."},{id:"content-os",label:"Content OS",agent:"antman",role:"Content",counts:[["skills",14],["queued",0]],desc:"IG / X / LinkedIn / YouTube. Never publishes on its own."},{id:"design-os",label:"Design OS",agent:"drose",role:"Design",counts:[["skills",14],["QA floor","8/10"]],desc:"Landing pages, creatives, decks. Rendered, QA'd, queued."},{id:"ops-os",label:"Ops OS",agent:"ironman",role:"CRM + automation",counts:[["skills",14],["integrations","3/3"]],desc:"CRM, automations, invoicing, integration health."}],system:[{id:"brain-os",label:"Brain OS",counts:[["pages",1523],["embedded","100%"]],desc:"The second brain: gBrain + Obsidian. The context every agent reads."},{id:"kernel",label:"Kernel",counts:[["invariants",32],["categories",7]],desc:"The spine. Judgment encoded as blocking gates."},{id:"schedules",label:"Schedules",counts:[["heartbeat","staged"]],desc:"The always-on layer. Drafts queue; nothing sends."}],agents:[{id:"zayn",os:"founder-os",role:"Orchestrator",skills:12,now:"idle"},{id:"steph",os:"outreach-os",role:"Outreach",skills:20,now:"1 draft queued"},{id:"kyrie",os:"growth-os",role:"Paid media + SEO",skills:14,now:"idle"},{id:"drose",os:"design-os",role:"Design",skills:14,now:"idle"},{id:"antman",os:"content-os",role:"Content",skills:14,now:"idle"},{id:"ironman",os:"ops-os",role:"CRM + automation",skills:14,now:"idle"}],missions:{columns:["Surfaced","Researched","Drafted","Review","Queued","Booked"],cards:[{col:"Queued",os:"outreach-os",agent:"steph",label:"Warm re-engagement",meta:"Construction developer · Lane A",flag:"awaiting approval"}]},activity:[{when:"—",agent:"steph",event:"Outbound cycle: surfaced 2, drafted 1, skipped 1. 1 draft queued. Nothing sent."},{when:"—",agent:"system",event:"Six agents ready. Brain, WhatsApp, automation online."}],gates:[{cat:"Outbound & approval",n:3,sample:"Never send without explicit approval"},{cat:"Truth & fabrication",n:8,sample:"Never invent case studies or numbers"},{cat:"Quality & QA",n:8,sample:"QA >= 8/10 before it ships"},{cat:"Format & deliverable",n:9,sample:"Formatted Docs, GitHub Pages only"},{cat:"Copy & brand",n:9,sample:"ZippyScale voice, no em dashes"},{cat:"Client & data",n:7,sample:"No credentials or PII in outputs"},{cat:"Execution",n:4,sample:"Autonomous after spec; max 2 revisions"}]};
+
+function countStr(c){return c.map(([k,v])=>`<span class="c"><b>${esc(v)}</b> ${esc(k)}</span>`).join('');}
+function renderNav(){
+  const n=$('#nav'); n.innerHTML='';
+  n.appendChild(ce('div','grp','Workspaces'));
+  S.os.forEach(o=>n.appendChild(navItem(o,o.counts[0])));
+  n.appendChild(ce('div','grp','System'));
+  S.system.forEach(o=>n.appendChild(navItem(o,o.counts[0])));
 }
-// theme toggle
-const root=document.documentElement, tb=document.getElementById('theme');
-tb.onclick=()=>{const d=root.getAttribute('data-theme')==='dark'||(!root.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme:dark)').matches);root.setAttribute('data-theme',d?'light':'dark');};
-// load state (same-origin on Pages); fall back to embedded snapshot
-fetch('state.json',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(render).catch(()=>render(FALLBACK));
+function navItem(o,firstCount){
+  const el=ce('div','item'+(o.id===cur?' on':''));
+  el.innerHTML=`<span class="ic">${ICON[o.id]||'•'}</span><span class="lb">${esc(o.label)}</span>`+
+    (firstCount?`<span class="ct">${esc(firstCount[1])}</span>`:'');
+  el.onclick=()=>go(o.id);
+  return el;
+}
+function board(cards,cols){
+  return `<div class="board">`+cols.map(col=>{
+    const cs=cards.filter(c=>c.col===col);
+    return `<div class="col"><div class="colh"><span>${esc(col)}</span><span class="n">${cs.length}</span></div>`+
+      (cs.length?cs.map(k=>`<div class="kc${k.flag?' hot':''}"><div class="who">${esc(k.agent||'')}</div><div class="t">${esc(k.label)}</div><div class="m">${esc(k.meta||'')}</div>${k.flag?`<span class="fl">${esc(k.flag)}</span>`:''}</div>`).join(''):`<div class="cempty">—</div>`)+
+      `</div>`;
+  }).join('')+`</div>`;
+}
+function stream(evs){
+  return `<div class="stream">`+evs.map(e=>`<div class="ev"><span class="t">${esc(e.when)}</span><span class="ag">${esc(e.agent)}</span><span class="tx">${esc(e.event)}</span></div>`).join('')+`</div>`;
+}
+function agentPanel(a){
+  const ini=a.id.slice(0,2).toUpperCase();
+  return `<div class="apanel"><div class="big">${ini}</div>
+    <div><div class="nm">${esc(a.id)}</div><div class="su mono">${esc(a.role)} · ${a.skills} skills · <span style="color:var(--ok)">●</span> ${esc(a.now)}</div></div>
+    <button class="runbtn" onclick="alert('Runs execute in the private control panel on the Mini. This public view is read-only.')">▸ Run</button></div>`;
+}
+
+function viewFounder(){
+  const st=S.stats;
+  return `<div class="vhead"><h1>Founder OS</h1><span class="who">orchestrator · zayn</span></div>
+    <div class="counts"><span class="c"><b>${st.os}</b> workspaces</span><span class="c"><b>${st.agents}</b> agents</span><span class="c"><b>${st.skills}</b> skills</span><span class="c"><b>${st.gates}</b> gates</span><span class="c"><b>${st.queue}</b> <span>queued</span></span><span class="c"><b>${st.integrations}</b> integrations</span></div>
+    <p class="lead">The shell. Six named workspaces, each an OS with its own agent, sharing one brain and one set of governance gates. This runs a live agency, so the results are the proof, not a template's claims.</p>
+    <div class="sec"><h2>Fleet</h2><div class="fleet">${S.agents.map(a=>`<div class="acard" onclick="go('${a.os}')"><div class="r1"><div class="av">${a.id.slice(0,2).toUpperCase()}</div><div><div class="id">${esc(a.id)}</div><div class="rl">${esc(a.role)}</div></div><div class="sk">${a.skills} sk</div></div><div class="now"><span class="hbdot"></span>${esc(a.now)}</div></div>`).join('')}</div></div>
+    <div class="sec"><h2>Missions</h2>${board(S.missions.cards,S.missions.columns)}</div>
+    <div class="sec"><h2>Activity</h2>${stream(S.activity)}</div>
+    <div class="sec"><h2>Not a template</h2><div class="diff"><div class="dc"><h4>A template</h4><ul><li>Prompts you configure yourself</li><li>Unverified claims of results</li><li>No memory, no proof it ran</li></ul></div><div class="dc ours"><h4>This OS</h4><ul><li>Runs a real agency, live</li><li>Honest run logs, every action recorded</li><li>A postgres brain, gate-checked judgment</li></ul></div></div></div>`;
+}
+function viewOS(o){
+  const a=S.agents.find(x=>x.os===o.id);
+  const mine=S.missions.cards.filter(c=>c.os===o.id);
+  return `<div class="vhead"><h1>${esc(o.label)}</h1><span class="who">${esc(o.role)} · ${esc(o.agent)}</span></div>
+    <div class="counts">${countStr(o.counts)}</div>
+    <p class="lead">${esc(o.desc)}</p>
+    ${a?`<div class="sec"><h2>Agent</h2>${agentPanel(a)}</div>`:''}
+    <div class="sec"><h2>Pipeline</h2>${board(mine,S.missions.columns)}</div>
+    <div class="sec"><h2>Activity</h2>${stream(S.activity.filter(e=>e.agent===o.agent||e.agent==='system'))}</div>`;
+}
+function viewBrain(o){
+  return `<div class="vhead"><h1>Brain OS</h1><span class="who">context layer</span></div>
+    <div class="counts">${countStr(o.counts)}</div>
+    <p class="lead">${esc(o.desc)}</p>
+    <div class="sec"><h2>Vault</h2><div class="panel mono" style="font-size:12.5px;color:var(--dim);line-height:1.9">
+      gbrain@postgres · 1,523 pages · embedded 100% (local, free)<br>obsidian · Sandy-Second-Brain (iCloud) + ~/second-brain (Syncthing)<br>client-status-truth · single source of truth, re-queried before any client work</div></div>
+    <div class="note">The brain is queried, never guessed. Every agent reads it at boot: client status, offer, voice-of-customer, past decisions. Search first, assume-present, cite or skip.</div>`;
+}
+function viewKernel(o){
+  return `<div class="vhead"><h1>Kernel</h1><span class="who">the spine</span></div>
+    <div class="counts">${countStr(o.counts)}</div>
+    <p class="lead">Judgment encoded as hard gates that block a skill from running on thin context or a rule violation. This is the real IP: not the prompts, the discipline.</p>
+    <div class="sec"><h2>Spine (read in order at boot)</h2><div class="spine">${S.spine.map(f=>`<span class="file">${esc(f)}</span>`).join('')}</div></div>
+    <div class="sec"><h2>Governance gates · ${S.stats.gates}</h2><div class="gates">${S.gates.map(g=>`<div class="gate"><span class="gn">${g.n}</span><div><div class="gc">${esc(g.cat)}</div><div class="gs">${esc(g.sample)}</div></div></div>`).join('')}</div></div>`;
+}
+function viewSchedules(o){
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  return `<div class="vhead"><h1>Schedules</h1><span class="who">always-on layer</span></div>
+    <div class="counts">${countStr(o.counts)}</div>
+    <p class="lead">${esc(o.desc)} An external scheduler on the Mini wakes a headless run, it makes progress, writes an append-only log, and exits. Claude is never a persistent server.</p>
+    <div class="sec"><h2>Heartbeat · ${esc(S.heartbeat)}</h2>
+    <div class="panel"><div class="counts" style="margin:0">
+      <span class="c">daily · <b>08:30</b> weekdays · fast scan</span>
+      <span class="c">weekly · <b>Mon 09:00</b> · full steph cycle</span></div>
+      <div class="note" style="margin-top:12px">Staged, not loaded. Activation is a single command; drafts land in the queue, nothing sends.</div></div></div>`;
+}
+
+function render(){
+  $('#topupd').textContent=S.updated;
+  $('#bootname').textContent=S.boot;
+  $('#rf-hb').textContent='heartbeat '+S.heartbeat;
+  $('#rf-dot').className='hbdot'+(S.heartbeat==='live'?' pulse':'');
+  renderNav();
+  const all=[...S.os,...S.system];
+  const o=all.find(x=>x.id===cur)||S.os[0];
+  $('#crumb').textContent=cur;
+  let html;
+  if(cur==='founder-os') html=viewFounder();
+  else if(cur==='brain-os') html=viewBrain(o);
+  else if(cur==='kernel') html=viewKernel(o);
+  else if(cur==='schedules') html=viewSchedules(o);
+  else html=viewOS(o);
+  $('#view').innerHTML=html;
+  $('#view').scrollTop=0;
+}
+function go(id){cur=id;$('#rail').classList.remove('open');render();}
+
+/* command palette */
+const pal={open:false,sel:0,items:[]};
+function palItems(){
+  const os=[...S.os,...S.system].map(o=>({t:o.label,s:o.id,ic:ICON[o.id]||'•',go:o.id}));
+  const ag=S.agents.map(a=>({t:a.id,s:a.role,ic:'◇',go:a.os}));
+  return [...os,...ag];
+}
+function openPal(){pal.open=true;pal.sel=0;$('#scrim').classList.add('open');$('#palIn').value='';filterPal('');$('#palIn').focus();}
+function closePal(){pal.open=false;$('#scrim').classList.remove('open');}
+function filterPal(q){
+  q=q.toLowerCase();
+  pal.items=palItems().filter(i=>(i.t+i.s).toLowerCase().includes(q));
+  pal.sel=Math.min(pal.sel,Math.max(0,pal.items.length-1));
+  $('#plist').innerHTML=pal.items.map((i,x)=>`<div class="prow${x===pal.sel?' sel':''}" data-i="${x}"><span class="ic">${i.ic}</span><span>${esc(i.t)}</span><span class="sub">${esc(i.s)}</span><span class="k">↵</span></div>`).join('')||'<div class="prow"><span class="sub">no match</span></div>';
+  [...$('#plist').children].forEach(r=>{const i=r.dataset.i;if(i!=null){r.onclick=()=>{go(pal.items[i].go);closePal();};}});
+}
+addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();pal.open?closePal():openPal();return;}
+  if(!pal.open)return;
+  if(e.key==='Escape')closePal();
+  else if(e.key==='ArrowDown'){pal.sel=Math.min(pal.sel+1,pal.items.length-1);filterPal($('#palIn').value);}
+  else if(e.key==='ArrowUp'){pal.sel=Math.max(pal.sel-1,0);filterPal($('#palIn').value);}
+  else if(e.key==='Enter'&&pal.items[pal.sel]){go(pal.items[pal.sel].go);closePal();}
+});
+$('#palIn').addEventListener('input',e=>{pal.sel=0;filterPal(e.target.value);});
+$('#cmdkBtn').onclick=openPal; $('#scrim').onclick=e=>{if(e.target===$('#scrim'))closePal();};
+$('#menub').onclick=()=>$('#rail').classList.toggle('open');
+$('#theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');};
+
+fetch('state.json',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(d=>{S=d;render();}).catch(()=>{S=FB;render();});
 </script>
 </body>
 </html>
