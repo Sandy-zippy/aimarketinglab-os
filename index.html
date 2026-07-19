@@ -839,7 +839,32 @@
   const api=(p,b)=>fetch(p,{method:b?'POST':'GET',headers:H,body:b?JSON.stringify(b):null}).then(r=>r.ok?r.json():Promise.reject(r.status));
   const esc=s=>(s==null?'':(''+s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   let current='steph';
-  api('/api/state').then(s=>init(s)).catch(()=>{});   // static showcase if unreachable
+  // backend reachable (Mini panel) → full live+operable; else read the committed state.json → live read-only public view
+  api('/api/state').then(s=>init(s)).catch(()=>{ fetch('state.json',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(renderPublic).catch(()=>{}); });
+  function renderPublic(s){
+    document.body.setAttribute('data-public','1');
+    const by={}; (s.agents||[]).forEach(a=>by[a.id]=a);
+    document.querySelectorAll('.arow[data-go="console"]').forEach(row=>{
+      const id=(row.querySelector('.id')||{}).textContent, a=by[id], tk=row.querySelector('.task'), dot=row.querySelector('.dot');
+      if(a&&tk){tk.textContent=esc(a.now||'idle'); if(dot)dot.className='dot '+(/run|work/i.test(a.now||'')?'working':'idle');}
+    });
+    document.querySelectorAll('#v-home .acard').forEach(c=>{
+      const id=(c.querySelector('.cid')||{}).textContent, a=by[id], now=c.querySelector('.now');
+      if(a&&now)now.innerHTML='<span class="dot '+(/run|work/i.test(a.now||'')?'working':'idle')+'"></span>'+esc(a.now||'idle');
+    });
+    // missions: real cards from state.json into the board (read-only, no approve on the public view)
+    const cols=document.querySelectorAll('#v-home .board .col'), cards=(s.missions&&s.missions.cards)||[];
+    if(cols.length>=5){
+      const rev=cards; let h='<div class="colh"><span>Queued</span><span class="n">'+rev.length+'</span></div>';
+      rev.forEach(k=>{h+='<div class="kc rev"><div class="who">'+esc(k.agent||'')+'</div><div class="t">'+esc(k.label||'')+'</div><div class="m">'+esc(k.meta||'')+'</div>'+(k.flag?'<span class="fl warn">'+esc(k.flag)+'</span>':'')+'</div>';});
+      cols[3].innerHTML=h;
+    }
+    // activity stream from state.json
+    const st=document.querySelector('#v-home .stream');
+    if(st&&s.activity)st.innerHTML=s.activity.map(e=>'<div class="ev"><span class="t">'+esc((e.when||'').slice(-5))+'</span><span class="ag teal mono">'+esc(e.agent||'')+'</span><span class="tx">'+esc(e.event||'')+'</span></div>').join('');
+    // counts chip: updated + queue
+    const upd=document.querySelector('.live #upd'); if(upd)upd.textContent=esc(s.updated||'');
+  }
   function init(){
     document.body.setAttribute('data-live','1');
     document.querySelectorAll('.arow[data-go="console"]').forEach(row=>{
