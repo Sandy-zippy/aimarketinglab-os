@@ -844,26 +844,61 @@
   function renderPublic(s){
     document.body.setAttribute('data-public','1');
     const by={}; (s.agents||[]).forEach(a=>by[a.id]=a);
+    const AG=s.activity||[], CARDS=(s.missions&&s.missions.cards)||[], OP=s.operate_url||'';
+    const working=id=>/run|work|draft/i.test((by[id]&&by[id].now)||'');
+
+    // top bar: label the mirror + surface an Operate button when a live-panel URL is published
+    const liveLbl=document.querySelector('.top .live span:last-child'); if(liveLbl)liveLbl.textContent='read-only mirror';
+    const liveWrap=document.querySelector('.top .live');
+    if(liveWrap&&OP&&!document.getElementById('opbtn')) liveWrap.insertAdjacentHTML('afterend','<a id="opbtn" class="runbtn" style="padding:5px 12px;font-size:12px;margin-left:2px" href="'+esc(OP)+'" target="_blank" rel="noopener">▶ Operate</a>');
+
+    // per-agent read-only console — clicking any agent opens THAT agent, not a fixed one
+    function showAgent(id){
+      const a=by[id]||{}, acts=AG.filter(e=>e.agent===id), drafts=CARDS.filter(k=>k.agent===id);
+      const con=document.querySelector('#v-console .console'); if(!con)return;
+      document.getElementById('crumb').textContent=id;
+      con.innerHTML=
+        '<div class="vhead"><h1 style="text-transform:capitalize">'+esc(id)+'</h1><span class="who">'+esc(a.role||'agent')+' · '+(a.skills||0)+' skills · read-only mirror</span></div>'+
+        '<div class="assign" style="margin-top:14px">'+
+          '<div class="albl"><span class="tile skill" style="width:16px;height:16px;font-size:9px">▸</span> Assign · runs on the live panel</div>'+
+          '<p style="color:var(--dim);font-size:13px;line-height:1.55;margin:2px 0 10px">This public view mirrors the fleet. Assigning a task and watching '+esc(id)+' execute happens on the operating panel, where the agent actually runs.</p>'+
+          '<div class="arow2">'+(OP?'<a class="runbtn" href="'+esc(OP)+'" target="_blank" rel="noopener">▶ Open the live panel</a>':'<span class="chip route">live panel · sandys-mac-mini.local:8787</span>')+'</div>'+
+        '</div>'+
+        '<div class="sec"><h2>Recent activity <span class="rule"></span></h2><div class="stream">'+
+          (acts.length?acts.map(e=>'<div class="ev"><span class="t">'+esc(e.when||'')+'</span><span class="ag teal mono">'+esc(id)+'</span><span class="tx">'+esc(e.event||'')+'</span></div>').join(''):'<div class="ev"><span class="tx" style="color:var(--faint)">No logged activity in the current window.</span></div>')+
+        '</div></div>'+
+        (drafts.length?'<div class="sec"><h2>Queued drafts <span class="rule"></span></h2><div class="stream">'+drafts.map(k=>'<div class="ev"><span class="ag warn mono">'+esc(k.col||'queued')+'</span><span class="tx"><b>'+esc(k.label||'')+'</b> · '+esc(k.meta||'')+(k.flag?' · '+esc(k.flag):'')+'</span></div>').join('')+'</div></div>':'');
+    }
+
+    // rail rows + fleet cards: real status + click opens that agent
     document.querySelectorAll('.arow[data-go="console"]').forEach(row=>{
       const id=(row.querySelector('.id')||{}).textContent, a=by[id], tk=row.querySelector('.task'), dot=row.querySelector('.dot');
-      if(a&&tk){tk.textContent=esc(a.now||'idle'); if(dot)dot.className='dot '+(/run|work/i.test(a.now||'')?'working':'idle');}
+      if(a&&tk)tk.textContent=esc(a.now||'idle');
+      if(a&&dot)dot.className='dot '+(working(id)?'working':'idle');
+      row.addEventListener('click',()=>showAgent(id));
     });
     document.querySelectorAll('#v-home .acard').forEach(c=>{
       const id=(c.querySelector('.cid')||{}).textContent, a=by[id], now=c.querySelector('.now');
-      if(a&&now)now.innerHTML='<span class="dot '+(/run|work/i.test(a.now||'')?'working':'idle')+'"></span>'+esc(a.now||'idle');
+      if(a&&now)now.innerHTML='<span class="dot '+(working(id)?'working':'idle')+'"></span>'+esc(a.now||'idle');
+      c.addEventListener('click',()=>showAgent(id));
     });
-    // missions: real cards from state.json into the board (read-only, no approve on the public view)
-    const cols=document.querySelectorAll('#v-home .board .col'), cards=(s.missions&&s.missions.cards)||[];
-    if(cols.length>=5){
-      const rev=cards; let h='<div class="colh"><span>Queued</span><span class="n">'+rev.length+'</span></div>';
-      rev.forEach(k=>{h+='<div class="kc rev"><div class="who">'+esc(k.agent||'')+'</div><div class="t">'+esc(k.label||'')+'</div><div class="m">'+esc(k.meta||'')+'</div>'+(k.flag?'<span class="fl warn">'+esc(k.flag)+'</span>':'')+'</div>';});
-      cols[3].innerHTML=h;
+
+    // missions board: rebuild from the REAL columns + cards (empties shown honestly)
+    const board=document.querySelector('#v-home .board');
+    if(board){
+      const names=(s.missions&&s.missions.columns)||['Queued'];
+      board.style.gridTemplateColumns='repeat('+names.length+',minmax(150px,1fr))';
+      board.innerHTML=names.map(cn=>{
+        const items=CARDS.filter(k=>k.col===cn);
+        return '<div class="col"><div class="colh"><span>'+esc(cn)+'</span><span class="n">'+items.length+'</span></div>'+
+          (items.length?items.map(k=>'<div class="kc rev"><div class="who">'+esc(k.agent||'')+'</div><div class="t">'+esc(k.label||'')+'</div><div class="m">'+esc(k.meta||'')+'</div>'+(k.flag?'<span class="fl warn">'+esc(k.flag)+'</span>':'')+'</div>').join(''):'<div class="cempty mono">—</div>')+
+          '</div>';
+      }).join('');
     }
-    // activity stream from state.json
+
+    // activity stream
     const st=document.querySelector('#v-home .stream');
-    if(st&&s.activity)st.innerHTML=s.activity.map(e=>'<div class="ev"><span class="t">'+esc((e.when||'').slice(-5))+'</span><span class="ag teal mono">'+esc(e.agent||'')+'</span><span class="tx">'+esc(e.event||'')+'</span></div>').join('');
-    // counts chip: updated + queue
-    const upd=document.querySelector('.live #upd'); if(upd)upd.textContent=esc(s.updated||'');
+    if(st&&AG.length)st.innerHTML=AG.map(e=>'<div class="ev"><span class="t">'+esc(e.when||'')+'</span><span class="ag teal mono">'+esc(e.agent||'')+'</span><span class="tx">'+esc(e.event||'')+'</span></div>').join('');
   }
   function init(){
     document.body.setAttribute('data-live','1');

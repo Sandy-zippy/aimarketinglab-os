@@ -1,5 +1,5 @@
 {
-  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-19 23:09","as_of":"2026-07-19 23:09 refresh","tier":"foundation",
+  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-19 23:20","as_of":"2026-07-19 23:20 refresh","tier":"foundation",
   "heartbeat":"live","infra":{"brain":true,"whatsapp":true,"automation":true},
   "spine":["system.md","invariants.md","agency.yaml","brain/connect.md"],
   "stats":{"os":6,"agents":6,"skills":88,"gates":48,"queue":7,"integrations":"3/3"},
