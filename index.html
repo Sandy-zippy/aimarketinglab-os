@@ -831,5 +831,83 @@
   // ticking elapsed timer on the live run (liveness cue)
   let s=47; setInterval(()=>{s++;const m=String(Math.floor(s/60)).padStart(2,'0'),ss=String(s%60).padStart(2,'0');const e=document.getElementById('elapsed');if(e)e.textContent=m+':'+ss;},1000);
 </script>
+<script>
+/* LIVE controller — no-ops on the static public site (no /api/state); goes live when served by the panel. */
+(function(){
+  const TOKEN=new URLSearchParams(location.search).get('token')||'';
+  const H=TOKEN?{'X-Token':TOKEN,'Content-Type':'application/json'}:{'Content-Type':'application/json'};
+  const api=(p,b)=>fetch(p,{method:b?'POST':'GET',headers:H,body:b?JSON.stringify(b):null}).then(r=>r.ok?r.json():Promise.reject(r.status));
+  const esc=s=>(s==null?'':(''+s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  let current='steph';
+  api('/api/state').then(s=>init(s)).catch(()=>{});   // static showcase if unreachable
+  function init(){
+    document.body.setAttribute('data-live','1');
+    document.querySelectorAll('.arow[data-go="console"]').forEach(row=>{
+      const id=(row.querySelector('.id')||{}).textContent;
+      row.addEventListener('click',()=>{current=id;openConsole();});
+    });
+    const ta=q('#v-console textarea'), btn=q('#v-console .runbtn'), stop=q('#v-console .stopbtn');
+    if(btn) btn.addEventListener('click',fire);
+    if(ta) ta.addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();fire();}});
+    poll(); setInterval(poll,2500);
+  }
+  function q(s){return document.querySelector(s);}
+  function openConsole(){
+    const h=q('#v-console h1'); if(h)h.textContent=current;
+    const ta=q('#v-console textarea'); if(ta){ta.value='';ta.placeholder='Assign a task to '+current+', or let zayn route it. Enter to fire.';}
+    const tr=q('#v-console .transcript'); if(tr)tr.innerHTML='<div class="node"><div class="think mono">Ready. Assign a task above to '+esc(current)+'.</div></div>';
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+    document.getElementById('v-console').classList.add('on');
+    document.getElementById('crumb').textContent=current;
+  }
+  function fire(){
+    const ta=q('#v-console textarea'); const task=(ta.value||'').trim();
+    const tr=q('#v-console .transcript'); if(tr)tr.innerHTML='<div class="node"><div class="think mono">Dispatching to '+esc(current)+'…</div></div>';
+    api('/api/run',{agent:current,task:task||undefined}).then(()=>{if(ta)ta.value='';setTimeout(poll,600);}).catch(e=>{if(tr)tr.innerHTML='<div class="node"><div class="think mono">Run blocked ('+esc(e)+'). If 403, add ?token=… ; if the run 401s, claude needs login on this box.</div></div>';});
+  }
+  function poll(){api('/api/state').then(s=>{renderRail(s);if(document.getElementById('v-console').classList.contains('on'))renderConsole(s);}).catch(()=>{});}
+  function renderRail(s){
+    const by={}; (s.jobs||[]).forEach(j=>{if(!by[j.agent]||j.started>by[j.agent].started)by[j.agent]=j;});
+    document.querySelectorAll('.arow[data-go="console"]').forEach(row=>{
+      const id=(row.querySelector('.id')||{}).textContent, j=by[id], dot=row.querySelector('.dot'), tk=row.querySelector('.task');
+      if(!j)return;
+      if(j.status==='running'){dot.className='dot working';tk.textContent='running · '+((j.task||j.tail||'working')+'').slice(0,30);}
+      else{dot.className='dot idle';tk.textContent=(j.status==='done'?'done · ':'')+((j.task||'idle')+'').slice(0,30);}
+    });
+  }
+  function renderConsole(s){
+    const mine=(s.jobs||[]).filter(j=>j.agent===current), j=mine[mine.length-1], tr=q('#v-console .transcript'); if(!tr||!j)return;
+    const rid=q('#v-console .rid'); if(rid)rid.innerHTML='run <b>#'+esc((j.id+'').slice(-6))+'</b> · '+esc(current);
+    const rm=q('#v-console .rmeta'); if(rm)rm.textContent='model claude · '+(j.tools||0)+' tool calls · '+j.status+(j.cost?(' · $'+j.cost):'');
+    const bd=q('#v-console .stbadge'); if(bd)bd.innerHTML='<span class="dot '+(j.status==='running'?'working':'idle')+'"></span> '+esc(j.status);
+    tr.innerHTML=renderEvents(j.events||[]);
+    const main=document.getElementById('main'); if(main&&j.status==='running')main.scrollTop=main.scrollHeight;
+  }
+  function toolCard(ev,result){
+    const name=ev.name||'tool', inp=ev.input||{}, cmd=inp.command||'';
+    let tile='skill',type='tool',label=name,body='';
+    if(name==='Bash'&&/brain\/gb|gb (get|search|query)/.test(cmd)){tile='brain';type='brain query';label='gBrain';body='<div class="qline mono">'+esc(cmd.replace(/^.*?gb /,'gb ')).slice(0,140)+'</div>';}
+    else if(name==='Bash'){type='bash';label=esc((cmd.trim().split(/\s+/)[0]||'bash'));body='<div class="qline mono">'+esc(cmd.slice(0,140))+'</div>';}
+    else if(name==='Read'||name==='Grep'||name==='Glob'){type=name.toLowerCase();label=esc(((inp.file_path||inp.pattern||inp.path||name)+'').split('/').slice(-1)[0]);}
+    else if(name==='Write'||name==='Edit'){type='write';label=esc(((inp.file_path||'file')+'').split('/').slice(-1)[0]);}
+    else if(name==='Task'){tile='sub';type='sub-agent';label=esc(inp.subagent_type||inp.description||'sub');}
+    else if(name==='WebSearch'||name==='WebFetch'){type='web';label=esc(((inp.query||inp.url||'web')+'').slice(0,40));}
+    const g=tile==='brain'?'❖':tile==='sub'?'◇':'▸';
+    if(result)body+='<div class="outsum mono">'+esc((result+'').slice(0,240))+'</div>';
+    return '<div class="node tool"><div class="tc"><div class="tch"><span class="tile '+tile+'">'+g+'</span><span class="tctype">'+esc(type)+'</span><span class="tcname">'+label+'</span><span class="tctime mono ok">done</span></div><div class="tcb">'+body+'</div></div></div>';
+  }
+  function renderEvents(evs){
+    let h='',i=0;
+    while(i<evs.length){const ev=evs[i];
+      if(ev.kind==='text'){h+='<div class="node"><div class="turn agent"><div class="tav">'+esc(current.slice(0,2).toUpperCase())+'</div><div class="tbody"><span class="say">'+esc((ev.text||'').slice(0,400))+'</span></div></div></div>';i++;}
+      else if(ev.kind==='tool'){let r=(evs[i+1]&&evs[i+1].kind==='result')?evs[i+1].text:null;h+=toolCard(ev,r);i+=r?2:1;}
+      else if(ev.kind==='result'){i++;}
+      else if(ev.kind==='done'){h+='<div class="node"><div class="think mono">Run '+(ev.ok?'complete':'ended')+(ev.cost?(' · $'+ev.cost):'')+'. Any drafts are in the queue for approval.</div></div>';i++;}
+      else i++;
+    }
+    return h||'<div class="node"><div class="think mono">Working…</div></div>';
+  }
+})();
+</script>
 </body>
 </html>
