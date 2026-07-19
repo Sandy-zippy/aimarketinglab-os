@@ -3,30 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Marketing Lab OS</title>
-<meta name="description" content="An AI marketing operating system that runs a real agency. Six agents across named workspaces, hard governance gates, honest run logs. A system you operate, not a template you fill in.">
-<link rel="canonical" href="https://os.aimarketinglabs.in/">
-<meta property="og:title" content="AI Marketing Lab OS">
-<meta property="og:description" content="An AI marketing operating system that runs a real agency: workspaces, agents, governance gates, honest run logs.">
-<meta property="og:url" content="https://os.aimarketinglabs.in/">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary">
+<title>AI Marketing Lab OS · Unified Shell</title>
+<meta name="description" content="The unified shell: view, assign, and watch the fleet work live. Mission control for the agency, not a stats page.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:oklch(0.19 0.015 285); --panel:oklch(0.225 0.016 285); --panel2:oklch(0.255 0.017 285);
+    --bg:oklch(0.185 0.015 285); --panel:oklch(0.222 0.016 285); --panel2:oklch(0.258 0.017 285); --panel3:oklch(0.295 0.018 285);
     --line:oklch(0.32 0.016 285); --line2:oklch(0.4 0.018 285);
-    --ink:oklch(0.95 0.008 95); --dim:oklch(0.72 0.012 285); --faint:oklch(0.56 0.014 285);
-    --lime:oklch(0.9 0.19 118); --lime-ink:oklch(0.28 0.05 130);
-    --ok:oklch(0.78 0.14 155); --warn:oklch(0.8 0.13 80);
-    --rail:248px;
+    --ink:oklch(0.95 0.008 95); --dim:oklch(0.73 0.012 285); --faint:oklch(0.57 0.014 285);
+    --lime:oklch(0.9 0.19 118); --lime-dim:oklch(0.78 0.15 122); --lime-ink:oklch(0.27 0.05 130);
+    --ok:oklch(0.78 0.14 155); --warn:oklch(0.81 0.14 78); --warn-ink:oklch(0.3 0.06 78);
+    --add:oklch(0.72 0.13 150); --del:oklch(0.62 0.12 25);
+    --rail:262px;
   }
   :root[data-theme="light"]{
-    --bg:oklch(0.985 0.008 95); --panel:oklch(0.995 0.006 95); --panel2:oklch(0.965 0.008 95);
-    --line:oklch(0.9 0.01 95); --line2:oklch(0.84 0.012 95);
-    --ink:oklch(0.28 0.02 285); --dim:oklch(0.46 0.02 285); --faint:oklch(0.62 0.018 285);
-    --lime:oklch(0.86 0.2 118); --lime-ink:oklch(0.32 0.06 130);
+    --bg:oklch(0.985 0.008 95); --panel:oklch(0.998 0.005 95); --panel2:oklch(0.965 0.008 95); --panel3:oklch(0.945 0.01 95);
+    --line:oklch(0.9 0.01 95); --line2:oklch(0.83 0.012 95);
+    --ink:oklch(0.27 0.02 285); --dim:oklch(0.45 0.02 285); --faint:oklch(0.6 0.018 285);
+    --lime:oklch(0.86 0.2 118); --lime-dim:oklch(0.8 0.17 122); --lime-ink:oklch(0.3 0.06 130);
+    --warn:oklch(0.72 0.15 70);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -36,305 +32,798 @@
   ::selection{background:var(--lime);color:var(--lime-ink)}
   button{font-family:inherit;cursor:pointer}
   a{color:inherit;text-decoration:none}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--line2)}
 
-  /* shell */
+  /* ---------- shell ---------- */
   .app{display:grid;grid-template-columns:var(--rail) 1fr;height:100vh}
   .rail{border-right:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;overflow-y:auto}
-  .brand{padding:16px 18px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:5}
-  .brand .b1{display:flex;align-items:center;gap:9px}
-  .mark{width:24px;height:24px;border-radius:6px;background:var(--lime);color:var(--lime-ink);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
-  .brand .nm{font-family:'Space Grotesk';font-weight:700;font-size:14px}
-  .boot{margin-top:9px;font-size:11px}
+  .brand{padding:15px 16px 13px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:5}
+  .b1{display:flex;align-items:center;gap:9px}
+  .mark{width:25px;height:25px;border-radius:7px;background:var(--lime);color:var(--lime-ink);display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
+  .nm{font-family:'Space Grotesk';font-weight:700;font-size:14px;letter-spacing:-.01em}
+  .boot{margin-top:9px;font-size:10.5px}
   .boot .p{color:var(--lime)} .boot .c{color:var(--faint)}
-  .cursor{display:inline-block;width:6px;height:12px;background:var(--lime);vertical-align:-1px;margin-left:2px;animation:blink 1.1s steps(1) infinite}
+  .cursor{display:inline-block;width:6px;height:11px;background:var(--lime);vertical-align:-1px;margin-left:1px;animation:blink 1.1s steps(1) infinite}
   @keyframes blink{50%{opacity:0}}
 
-  nav{padding:12px 10px;flex:1}
-  .grp{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);padding:12px 10px 7px}
-  .item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;color:var(--dim);cursor:pointer;position:relative}
+  nav{padding:10px 10px 4px;flex:1}
+  .grp{font-size:9.5px;text-transform:uppercase;letter-spacing:.13em;color:var(--faint);padding:13px 8px 6px;display:flex;justify-content:space-between}
+  .grp .gc{color:var(--faint);opacity:.8}
+  .item{display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:9px;color:var(--dim);cursor:pointer;position:relative;transition:background .12s}
   .item:hover{background:var(--panel2);color:var(--ink)}
   .item.on{background:var(--panel2);color:var(--ink)}
-  .item.on::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--lime)}
-  .item .ic{width:18px;text-align:center;font-size:13px;flex:none;color:var(--faint)}
+  .item.on::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:3px;background:var(--lime)}
+  .item .ic{width:17px;text-align:center;font-size:12px;flex:none;color:var(--faint)}
   .item.on .ic{color:var(--lime)}
-  .item .lb{flex:1;font-size:13px;font-weight:450}
-  .item .ct{font-family:'JetBrains Mono';font-size:10.5px;color:var(--faint)}
-  .hbdot{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:none}
-  .hbdot.pulse{background:var(--lime);animation:pulse 1.8s ease-out infinite}
-  @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in oklch,var(--lime) 60%,transparent)}70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
-  .railfoot{padding:12px 16px;border-top:1px solid var(--line);font-size:11px;color:var(--faint);display:flex;align-items:center;gap:8px}
+  .item .lb{flex:1;font-size:13px;font-weight:500}
+  .item .ct{font-family:'JetBrains Mono';font-size:10px;color:var(--faint)}
 
-  /* main */
-  .main{overflow-y:auto;position:relative}
-  .top{position:sticky;top:0;z-index:4;display:flex;align-items:center;gap:14px;padding:0 24px;height:52px;border-bottom:1px solid var(--line);background:color-mix(in oklch,var(--bg) 82%,transparent);backdrop-filter:blur(8px)}
-  .top .path{font-family:'JetBrains Mono';font-size:12px;color:var(--dim)}
-  .top .path b{color:var(--ink);font-weight:500}
-  .cmdk{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--faint);border:1px solid var(--line);border-radius:8px;padding:5px 9px;cursor:pointer}
+  /* fleet rail rows */
+  .arow{align-items:flex-start;padding:7px 9px}
+  .arow .av{width:26px;height:26px;border-radius:8px;background:var(--panel2);border:1px solid var(--line2);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:10.5px;flex:none;color:var(--dim)}
+  .arow.on .av,.arow:hover .av{color:var(--ink)}
+  .arow .meta{flex:1;min-width:0}
+  .arow .top{display:flex;align-items:center;gap:7px}
+  .arow .id{font-family:'Space Grotesk';font-weight:600;font-size:12.5px;text-transform:capitalize;color:var(--ink)}
+  .arow .rl{font-size:10px;color:var(--faint);margin-left:auto;font-family:'JetBrains Mono'}
+  .arow .task{font-size:10.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-family:'JetBrains Mono'}
+  .arow.working .task{color:var(--lime-dim)}
+  .arow.needs .task{color:var(--warn)}
+  .dot{width:7px;height:7px;border-radius:50%;flex:none}
+  .dot.idle{background:var(--faint)}
+  .dot.working{background:var(--lime);animation:pulse 1.8s ease-out infinite}
+  .dot.needs{background:var(--warn);box-shadow:0 0 0 3px color-mix(in oklch,var(--warn) 22%,transparent)}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in oklch,var(--lime) 55%,transparent)}70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  .railfoot{padding:11px 15px;border-top:1px solid var(--line);font-size:10.5px;color:var(--faint);display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono'}
+
+  /* ---------- main ---------- */
+  .main{overflow-y:auto;position:relative;scroll-behavior:smooth}
+  .top{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:14px;padding:0 22px;height:50px;border-bottom:1px solid var(--line);background:color-mix(in oklch,var(--bg) 80%,transparent);backdrop-filter:blur(10px)}
+  .path{font-family:'JetBrains Mono';font-size:12px;color:var(--dim)}
+  .path b{color:var(--ink);font-weight:500}
+  .path .sep{color:var(--faint);margin:0 2px}
+  .cmdk{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--faint);border:1px solid var(--line);border-radius:8px;padding:5px 9px}
   .cmdk:hover{border-color:var(--line2);color:var(--dim)}
-  .kbd{font-family:'JetBrains Mono';font-size:10.5px;border:1px solid var(--line2);border-radius:4px;padding:1px 5px}
-  .tbtn{border:1px solid var(--line);background:none;color:var(--faint);border-radius:8px;width:30px;height:30px;font-size:14px}
+  .kbd{font-family:'JetBrains Mono';font-size:10px;border:1px solid var(--line2);border-radius:4px;padding:1px 5px}
+  .tbtn{border:1px solid var(--line);background:none;color:var(--faint);border-radius:8px;width:30px;height:30px;font-size:14px;display:grid;place-items:center}
   .tbtn:hover{color:var(--ink);border-color:var(--line2)}
-  .live{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--dim);font-family:'JetBrains Mono'}
+  .live{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--dim);font-family:'JetBrains Mono'}
 
-  .view{padding:26px 24px 60px;max-width:1120px}
-  .vhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:5px}
-  .vhead h1{font-size:24px;font-weight:700}
-  .vhead .who{font-size:12px;color:var(--faint);font-family:'JetBrains Mono'}
-  .counts{font-family:'JetBrains Mono';font-size:12px;color:var(--dim);margin:10px 0 4px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .view{display:none;padding:24px 26px 72px;max-width:1240px;animation:fade .22s ease-out}
+  .view.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .vhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .vhead h1{font-size:23px;font-weight:700}
+  .vhead .who{font-size:11.5px;color:var(--faint);font-family:'JetBrains Mono'}
+  .counts{font-family:'JetBrains Mono';font-size:11.5px;color:var(--dim);margin:11px 0 2px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
   .counts .c{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:3px 9px}
-  .counts .c b{color:var(--ink);font-weight:700} .counts .c span{color:var(--lime)}
-  .lead{color:var(--dim);font-size:14px;max-width:70ch;margin:12px 0 22px;line-height:1.6}
+  .counts .c b{color:var(--ink);font-weight:700} .counts .c em{color:var(--lime);font-style:normal}
+  .lead{color:var(--dim);font-size:13.5px;max-width:74ch;margin:13px 0 4px;line-height:1.6}
+  .sec{margin:26px 0 0}
+  .sec>h2{font-size:11px;text-transform:uppercase;letter-spacing:.11em;color:var(--faint);margin-bottom:12px;font-family:'JetBrains Mono';font-weight:500;display:flex;align-items:center;gap:9px}
+  .sec>h2 .rule{flex:1;height:1px;background:var(--line)}
 
-  .sec{margin:26px 0}
-  .sec>h2{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);margin-bottom:12px;font-family:'JetBrains Mono';font-weight:500}
+  /* ---------- home: layout ---------- */
+  .grid2{display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start}
 
-  /* fleet */
-  .fleet{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-  .acard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .15s}
-  .acard:hover{border-color:var(--line2)}
+  /* missions board */
+  .board{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:10px;overflow-x:auto;padding-bottom:4px}
+  .col{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px;min-height:110px}
+  .colh{display:flex;justify-content:space-between;align-items:center;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);margin-bottom:9px;font-family:'JetBrains Mono';font-weight:500}
+  .colh .n{background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:0 6px;font-size:9.5px}
+  .kc{background:var(--panel2);border:1px solid var(--line2);border-radius:9px;padding:9px 10px;margin-bottom:7px;cursor:pointer;transition:border-color .12s}
+  .kc:hover{border-color:var(--line2)}
+  .kc.hot{border-color:color-mix(in oklch,var(--lime) 55%,var(--line2))}
+  .kc.rev{border-color:color-mix(in oklch,var(--warn) 45%,var(--line2))}
+  .kc .who{font-family:'JetBrains Mono';font-size:9.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.03em}
+  .kc .t{font-size:12.5px;font-weight:600;margin:3px 0 1px;line-height:1.3}
+  .kc .m{font-size:11px;color:var(--dim)}
+  .kc .fl{display:inline-block;margin-top:7px;font-size:9.5px;font-weight:700;font-family:'JetBrains Mono';border-radius:20px;padding:2px 8px}
+  .kc .fl.lime{color:var(--lime-ink);background:var(--lime)}
+  .kc .fl.warn{color:var(--warn-ink);background:var(--warn)}
+  .cempty{color:var(--faint);font-size:10.5px;opacity:.5;padding:5px 2px;font-family:'JetBrains Mono'}
+
+  /* fleet cards */
+  .fleet{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+  .acard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:13px;cursor:pointer;transition:border-color .14s,transform .14s}
+  .acard:hover{border-color:var(--line2);transform:translateY(-1px)}
   .acard .r1{display:flex;align-items:center;gap:10px}
-  .av{width:34px;height:34px;border-radius:9px;background:var(--panel2);border:1px solid var(--line2);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:13px;flex:none}
-  .acard .id{font-family:'Space Grotesk';font-weight:600;font-size:14px;text-transform:capitalize}
-  .acard .rl{font-size:11.5px;color:var(--faint)}
-  .acard .sk{margin-left:auto;font-family:'JetBrains Mono';font-size:11px;color:var(--faint)}
-  .acard .now{margin-top:11px;font-size:12px;color:var(--dim);display:flex;align-items:center;gap:7px;font-family:'JetBrains Mono'}
+  .acard .cav{width:32px;height:32px;border-radius:9px;background:var(--panel2);border:1px solid var(--line2);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:12px;flex:none}
+  .acard .cid{font-family:'Space Grotesk';font-weight:600;font-size:13.5px;text-transform:capitalize}
+  .acard .crl{font-size:10.5px;color:var(--faint);font-family:'JetBrains Mono'}
+  .acard .csk{margin-left:auto}
+  .acard .now{margin-top:11px;padding-top:10px;border-top:1px dashed var(--line);font-size:11px;color:var(--dim);display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono'}
+  .acard.working .now{color:var(--lime-dim)} .acard.needs .now{color:var(--warn)}
+  .hb{display:flex;gap:2px;align-items:flex-end;height:12px;margin-left:auto}
+  .hb i{width:2px;background:var(--line2);border-radius:2px;display:block}
+  .acard.working .hb i{background:var(--lime);animation:beat 1.3s ease-in-out infinite}
+  .acard.working .hb i:nth-child(2){animation-delay:.15s} .acard.working .hb i:nth-child(3){animation-delay:.3s}
+  .acard.working .hb i:nth-child(4){animation-delay:.45s} .acard.working .hb i:nth-child(5){animation-delay:.6s}
+  @keyframes beat{0%,100%{height:3px}50%{height:12px}}
 
-  /* kanban */
-  .board{display:grid;grid-template-columns:repeat(6,minmax(140px,1fr));gap:10px;overflow-x:auto;padding-bottom:6px}
-  .col{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:10px;min-height:120px}
-  .colh{display:flex;justify-content:space-between;align-items:center;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);margin-bottom:10px;font-family:'JetBrains Mono'}
-  .colh .n{background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:0 7px;font-size:10px}
-  .kc{background:var(--panel2);border:1px solid var(--line2);border-radius:9px;padding:10px;margin-bottom:8px}
-  .kc.hot{border-color:var(--lime);box-shadow:inset 0 0 0 1px color-mix(in oklch,var(--lime) 30%,transparent)}
-  .kc .who{font-family:'JetBrains Mono';font-size:10px;color:var(--faint);text-transform:uppercase}
-  .kc .t{font-size:13px;font-weight:600;margin:3px 0}
-  .kc .m{font-size:11.5px;color:var(--dim)}
-  .kc .fl{display:inline-block;margin-top:7px;font-size:10px;font-weight:700;color:var(--lime-ink);background:var(--lime);border-radius:20px;padding:2px 8px}
-  .cempty{color:var(--faint);font-size:11px;opacity:.5;padding:6px 2px;font-family:'JetBrains Mono'}
-
-  /* activity */
-  .stream{border:1px solid var(--line);border-radius:12px;overflow:hidden}
-  .ev{display:flex;gap:14px;padding:12px 15px;border-bottom:1px solid var(--line);font-size:13px}
+  /* activity stream */
+  .stream{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+  .ev{display:flex;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);font-size:12.5px}
   .ev:last-child{border-bottom:none}
-  .ev .t{font-family:'JetBrains Mono';font-size:11px;color:var(--faint);white-space:nowrap;padding-top:1px}
-  .ev .ag{font-family:'JetBrains Mono';font-size:11px;color:var(--lime);min-width:56px}
-  .ev .tx{color:var(--dim)}
+  .ev .t{font-family:'JetBrains Mono';font-size:10.5px;color:var(--faint);white-space:nowrap;padding-top:1px}
+  .ev .ag{font-family:'JetBrains Mono';font-size:10.5px;min-width:52px}
+  .ev .ag.lime{color:var(--lime)} .ev .ag.sys{color:var(--faint)} .ev .ag.warn{color:var(--warn)}
+  .ev .tx{color:var(--dim)} .ev .tx b{color:var(--ink);font-weight:500}
 
-  /* agent panel (per-os) */
-  .apanel{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px}
-  .apanel .big{width:40px;height:40px;border-radius:10px;background:var(--panel2);border:1px solid var(--line2);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700}
-  .apanel .nm{font-family:'Space Grotesk';font-weight:600;font-size:15px;text-transform:capitalize}
-  .apanel .su{font-size:12px;color:var(--faint)}
-  .runbtn{margin-left:auto;font-size:12.5px;font-weight:600;border:1px solid var(--line2);background:var(--panel2);color:var(--dim);border-radius:8px;padding:8px 13px;display:flex;align-items:center;gap:7px}
-  .runbtn:hover{border-color:var(--lime);color:var(--ink)}
+  /* side cards (pipeline + cron) */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px}
+  .card h3{font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:3px}
+  .card .subh{font-size:10.5px;color:var(--faint);font-family:'JetBrains Mono';margin-bottom:13px}
+  .pipe{display:flex;flex-direction:column;gap:9px}
+  .pl{display:flex;align-items:center;gap:10px;font-size:12px}
+  .pl .plname{color:var(--dim);width:74px;flex:none}
+  .pl .bar{flex:1;height:7px;border-radius:5px;background:var(--panel2);overflow:hidden}
+  .pl .bar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,var(--lime-dim),var(--lime))}
+  .pl .pv{font-family:'JetBrains Mono';font-size:11px;color:var(--ink);width:22px;text-align:right;flex:none}
+  .pfoot{margin-top:13px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;font-family:'JetBrains Mono';font-size:11px;color:var(--faint)}
+  .pfoot b{color:var(--ink)}
+  .openbtn{margin-top:13px;width:100%;border:1px solid var(--line2);background:var(--panel2);color:var(--dim);border-radius:8px;padding:8px;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px}
+  .openbtn:hover{border-color:var(--lime);color:var(--ink)}
 
-  /* kernel gates */
-  .gates{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-  .gate{display:flex;gap:13px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:13px 15px}
-  .gate .gn{font-family:'JetBrains Mono';font-weight:700;font-size:17px;color:var(--lime);min-width:24px}
-  .gate .gc{font-weight:600;font-size:13.5px} .gate .gs{font-size:12px;color:var(--faint)}
-  .spine{display:flex;gap:8px;flex-wrap:wrap}
-  .file{font-family:'JetBrains Mono';font-size:12px;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:5px 10px}
-  .file::before{content:"▸ ";color:var(--lime)}
+  .cron{display:flex;flex-direction:column}
+  .cronrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .cronrow:last-child{border-bottom:none}
+  .cronrow .cn{font-family:'JetBrains Mono';font-size:12px;font-weight:500}
+  .cronrow .cwhen{font-family:'JetBrains Mono';font-size:10px;color:var(--faint);margin-top:1px}
+  .cronrow .cst{margin-left:auto;font-family:'JetBrains Mono';font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid var(--line2)}
+  .cst.ok{color:var(--ok);border-color:color-mix(in oklch,var(--ok) 40%,var(--line2))}
+  .cst.stg{color:var(--faint)}
+  .cst.next{color:var(--lime);border-color:color-mix(in oklch,var(--lime) 40%,var(--line2))}
 
-  /* generic panel + note */
-  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
-  .note{font-size:12.5px;color:var(--faint);border:1px dashed var(--line2);border-radius:10px;padding:12px 14px;line-height:1.55}
-  .diff{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
-  .dc{border:1px solid var(--line);border-radius:11px;padding:15px}
-  .dc.ours{background:var(--lime);color:var(--lime-ink);border:none}
-  .dc h4{font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:9px;font-family:'JetBrains Mono';opacity:.8}
-  .dc li{list-style:none;font-size:13px;padding:4px 0 4px 16px;position:relative}
-  .dc li::before{content:"–";position:absolute;left:0;opacity:.6}
+  /* ---------- console (centerpiece) ---------- */
+  .console{max-width:1240px}
+  .cwrap{display:grid;grid-template-columns:1fr 258px;gap:18px;align-items:start;margin-top:16px}
 
-  /* command palette */
-  .scrim{position:fixed;inset:0;background:oklch(0.12 0.01 285/.6);backdrop-filter:blur(3px);display:none;z-index:50;align-items:flex-start;justify-content:center;padding-top:12vh}
-  .scrim.open{display:flex}
-  .pal{width:560px;max-width:92vw;background:var(--panel);border:1px solid var(--line2);border-radius:14px;overflow:hidden;box-shadow:0 24px 80px oklch(0.1 0.01 285/.5)}
-  .pal input{width:100%;border:none;background:none;color:var(--ink);font-family:'JetBrains Mono';font-size:14px;padding:16px 18px;border-bottom:1px solid var(--line);outline:none}
-  .plist{max-height:340px;overflow-y:auto;padding:6px}
-  .prow{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px}
-  .prow.sel{background:var(--panel2)}
-  .prow .ic{width:16px;text-align:center;color:var(--faint)}
-  .prow .k{margin-left:auto;font-family:'JetBrains Mono';font-size:10px;color:var(--faint)}
-  .prow .sub{color:var(--faint);font-size:11.5px}
+  /* assign box */
+  .assign{background:var(--panel);border:1px solid var(--line2);border-radius:14px;padding:13px 14px 11px;box-shadow:0 1px 0 color-mix(in oklch,var(--lime) 12%,transparent) inset}
+  .assign .albl{font-family:'JetBrains Mono';font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+  .assign textarea{width:100%;border:none;background:none;color:var(--ink);font-family:Inter;font-size:14.5px;line-height:1.5;resize:none;outline:none;min-height:44px}
+  .assign textarea::placeholder{color:var(--faint)}
+  .arow2{display:flex;align-items:center;gap:8px;margin-top:9px;padding-top:10px;border-top:1px solid var(--line)}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono';font-size:11px;color:var(--dim);border:1px solid var(--line2);border-radius:20px;padding:4px 10px;background:var(--panel2)}
+  .chip .cav{width:15px;height:15px;border-radius:5px;background:var(--lime);color:var(--lime-ink);display:grid;place-items:center;font-size:8.5px;font-weight:700;font-family:'Space Grotesk'}
+  .chip.route{color:var(--faint)}
+  .runbtn{margin-left:auto;font-size:13px;font-weight:600;color:var(--lime-ink);background:var(--lime);border:none;border-radius:9px;padding:8px 15px;display:flex;align-items:center;gap:8px}
+  .runbtn .k{font-family:'JetBrains Mono';font-size:10px;background:color-mix(in oklch,var(--lime-ink) 14%,transparent);border-radius:4px;padding:1px 5px}
+  .runbtn:hover{background:var(--lime-dim)}
 
-  @media(max-width:900px){
-    .app{grid-template-columns:1fr}
-    .rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail);z-index:40;transform:translateX(-100%);transition:transform .2s}
-    .rail.open{transform:none}
-    .fleet,.gates,.diff{grid-template-columns:1fr}
-    .menub{display:grid!important}
-  }
+  /* run header */
+  .runhead{display:flex;align-items:center;gap:12px;margin:20px 0 4px;padding:11px 14px;background:var(--panel);border:1px solid var(--line);border-radius:11px}
+  .runhead .rav{width:30px;height:30px;border-radius:9px;background:var(--panel2);border:1px solid var(--line2);display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:11px}
+  .runhead .rid{font-family:'JetBrains Mono';font-size:12px;color:var(--ink)}
+  .runhead .rid b{color:var(--lime)}
+  .runhead .rmeta{font-family:'JetBrains Mono';font-size:10.5px;color:var(--faint);margin-top:2px}
+  .stbadge{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono';font-size:10.5px;color:var(--lime);border:1px solid color-mix(in oklch,var(--lime) 40%,var(--line2));border-radius:20px;padding:3px 10px}
+  .elapsed{font-family:'JetBrains Mono';font-size:12px;color:var(--dim);margin-left:2px}
+  .stopbtn{font-family:'JetBrains Mono';font-size:11px;color:var(--faint);border:1px solid var(--line2);background:none;border-radius:8px;padding:5px 11px}
+  .stopbtn:hover{color:var(--del);border-color:color-mix(in oklch,var(--del) 45%,var(--line2))}
+
+  /* transcript spine */
+  .transcript{position:relative;margin-top:6px;padding-left:26px}
+  .transcript::before{content:"";position:absolute;left:11px;top:6px;bottom:22px;width:1.5px;background:linear-gradient(var(--line2),var(--line) 82%,transparent)}
+  .node{position:relative;margin-bottom:13px}
+  .node::before{content:"";position:absolute;left:-19px;top:14px;width:9px;height:9px;border-radius:50%;background:var(--panel);border:1.5px solid var(--line2);z-index:2}
+  .node.tool::before{border-color:var(--lime-dim)}
+  .node.result::before{background:var(--lime);border-color:var(--lime)}
+  .node.review::before{background:var(--warn);border-color:var(--warn)}
+  .node.live::before{background:var(--lime);border-color:var(--lime);animation:pulse 1.8s ease-out infinite}
+
+  /* plain agent/user turns */
+  .turn{display:flex;gap:11px;align-items:flex-start;padding:2px 0}
+  .turn .tav{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-family:'Space Grotesk';font-weight:700;font-size:9.5px;flex:none;margin-top:1px}
+  .turn.user .tav{background:var(--panel3);border:1px solid var(--line2);color:var(--dim)}
+  .turn.agent .tav{background:var(--lime);color:var(--lime-ink)}
+  .turn .tbody{flex:1;font-size:13.5px;color:var(--ink);line-height:1.55;padding-top:2px}
+  .turn.user .tbody{color:var(--ink)}
+  .turn .trole{font-family:'JetBrains Mono';font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+  .turn .tbody .say{color:var(--dim)}
+  .think{font-family:'JetBrains Mono';font-size:12px;color:var(--faint);font-style:italic;padding:2px 0 2px 33px;position:relative}
+  .think::before{content:"‹thinking›";color:var(--lime-dim);font-style:normal;margin-right:7px}
+
+  /* tool-call card */
+  .tc{border:1px solid var(--line);background:var(--panel);border-radius:12px;overflow:hidden}
+  .tc .tch{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);background:color-mix(in oklch,var(--panel2) 55%,transparent)}
+  .tile{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:12px;flex:none}
+  .tile.brain{background:color-mix(in oklch,var(--lime) 20%,var(--panel2));color:var(--lime)}
+  .tile.skill{background:color-mix(in oklch,var(--lime) 20%,var(--panel2));color:var(--lime)}
+  .tile.sub{background:var(--panel3);color:var(--dim);border:1px solid var(--line2)}
+  .tile.file{background:var(--panel3);color:var(--dim);border:1px solid var(--line2)}
+  .tile.result{background:var(--lime);color:var(--lime-ink)}
+  .tile.review{background:var(--warn);color:var(--warn-ink)}
+  .tch .tctype{font-family:'JetBrains Mono';font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--faint)}
+  .tch .tcname{font-family:'JetBrains Mono';font-size:12px;color:var(--ink);font-weight:500}
+  .tch .tctime{margin-left:auto;font-family:'JetBrains Mono';font-size:10px;color:var(--faint)}
+  .tch .ok{color:var(--ok)}
+  .tcb{padding:11px 12px}
+
+  /* brain query body */
+  .qline{font-family:'JetBrains Mono';font-size:11.5px;color:var(--dim);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;margin-bottom:10px}
+  .qline .qk{color:var(--faint)} .qline .qv{color:var(--lime-dim)}
+  .qres{display:flex;flex-direction:column;gap:7px}
+  .qr{display:flex;align-items:center;gap:10px}
+  .qr .qt{font-size:12px;color:var(--ink);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .qr .qt .path{color:var(--faint);font-family:'JetBrains Mono';font-size:10px}
+  .qr .rel{width:66px;height:5px;border-radius:4px;background:var(--panel2);overflow:hidden;flex:none}
+  .qr .rel i{display:block;height:100%;background:var(--lime-dim);border-radius:4px}
+  .qr .qs{font-family:'JetBrains Mono';font-size:10px;color:var(--faint);width:38px;text-align:right;flex:none}
+
+  /* skill body */
+  .kv{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}
+  .kv .k{font-family:'JetBrains Mono';font-size:10.5px;color:var(--dim);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+  .kv .k b{color:var(--ink)}
+  .outsum{font-size:12.5px;color:var(--dim);line-height:1.5}
+  .outsum b{color:var(--ink);font-weight:500}
+  .badgerow{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+  .bdg{font-family:'JetBrains Mono';font-size:10px;color:var(--faint);border:1px solid var(--line2);border-radius:20px;padding:2px 9px}
+  .bdg.lime{color:var(--lime-ink);background:var(--lime);border-color:var(--lime)}
+
+  /* sub-agent nested */
+  .nested{margin-top:9px;border-left:2px solid var(--line2);padding-left:12px;display:flex;flex-direction:column;gap:8px}
+  .nstep{font-family:'JetBrains Mono';font-size:11px;color:var(--faint)}
+  .nstep .st{color:var(--dim)} .nstep .ok{color:var(--ok)}
+  .nres{font-size:12px;color:var(--dim);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+  .nres b{color:var(--ink);font-weight:500}
+
+  /* file write diff */
+  .difff{border:1px solid var(--line);border-radius:8px;overflow:hidden;font-family:'JetBrains Mono';font-size:11.5px}
+  .difff .dh{padding:5px 10px;background:var(--panel2);color:var(--faint);border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+  .difff .dl{padding:2px 10px;white-space:pre-wrap;line-height:1.6}
+  .difff .dl.add{background:color-mix(in oklch,var(--add) 12%,transparent);color:var(--add)}
+  .difff .dl.add::before{content:"+ ";opacity:.6}
+  .difff .dl.ctx{color:var(--dim)}
+  .difff .dl.ctx::before{content:"  "}
+
+  /* result body */
+  .tc.res{border-color:color-mix(in oklch,var(--lime) 40%,var(--line))}
+  .reslist{display:flex;flex-direction:column;gap:6px}
+  .rl2{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--dim)}
+  .rl2 .rn{font-family:'JetBrains Mono';font-size:10px;color:var(--lime);border:1px solid color-mix(in oklch,var(--lime) 35%,var(--line2));border-radius:5px;padding:1px 6px;flex:none}
+  .rl2 b{color:var(--ink);font-weight:500}
+  .rstat{margin-top:10px;padding-top:9px;border-top:1px dashed var(--line);font-family:'JetBrains Mono';font-size:11px;color:var(--faint)}
+  .rstat b{color:var(--ok)} .rstat .sent{color:var(--ink)}
+
+  /* review / approve card */
+  .tc.rev{border-color:color-mix(in oklch,var(--warn) 42%,var(--line))}
+  .draftbox{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:11px 12px;font-size:13px;color:var(--ink);line-height:1.55}
+  .draftbox .dto{font-family:'JetBrains Mono';font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px}
+  .gate{margin:11px 0 12px;font-size:12px;color:var(--warn);display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono'}
+  .actions{display:flex;gap:9px;align-items:center}
+  .approve{font-size:13px;font-weight:600;color:var(--lime-ink);background:var(--lime);border:none;border-radius:9px;padding:9px 18px}
+  .approve:hover{background:var(--lime-dim)}
+  .ghost{font-size:12.5px;color:var(--dim);border:1px solid var(--line2);background:none;border-radius:9px;padding:8px 14px}
+  .ghost:hover{color:var(--ink);border-color:var(--line2)}
+  .skip{margin-left:auto;font-size:11.5px;color:var(--faint);border:none;background:none;font-family:'JetBrains Mono'}
+  .skip:hover{color:var(--warn)}
+
+  /* run history sidebar */
+  .rhist{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;position:sticky;top:64px}
+  .rhist h3{font-family:'JetBrains Mono';font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);font-weight:500;margin-bottom:11px;display:flex;justify-content:space-between}
+  .hr{display:flex;gap:9px;padding:8px 8px;border-radius:9px;cursor:pointer;align-items:flex-start}
+  .hr:hover{background:var(--panel2)}
+  .hr.on{background:var(--panel2)}
+  .hr .hi{width:6px;height:6px;border-radius:50%;margin-top:5px;flex:none}
+  .hr.done .hi{background:var(--ok)} .hr.live .hi{background:var(--lime);animation:pulse 1.8s infinite} .hr.queued .hi{background:var(--faint)}
+  .hr .hid{font-family:'JetBrains Mono';font-size:11px;color:var(--ink)}
+  .hr .hd{font-size:11px;color:var(--dim);margin-top:1px;line-height:1.35}
+  .hr .ht{font-family:'JetBrains Mono';font-size:9.5px;color:var(--faint);margin-top:2px}
+
+  /* ---------- CRM (embedded twenty placeholder) ---------- */
+  .frame{border:1px solid var(--line2);border-radius:13px;overflow:hidden;background:var(--panel);margin-top:16px}
+  .fbar{display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--panel2);border-bottom:1px solid var(--line)}
+  .dots{display:flex;gap:6px} .dots i{width:9px;height:9px;border-radius:50%;background:var(--line2);display:block}
+  .furl{flex:1;font-family:'JetBrains Mono';font-size:11px;color:var(--faint);background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:4px 11px;text-align:center}
+  .furl b{color:var(--dim)}
+  .ftag{font-family:'JetBrains Mono';font-size:10px;color:var(--lime);border:1px solid color-mix(in oklch,var(--lime) 40%,var(--line2));border-radius:20px;padding:2px 9px}
+  .twenty{display:grid;grid-template-columns:180px 1fr;min-height:420px}
+  .tside{border-right:1px solid var(--line);padding:13px 11px;background:color-mix(in oklch,var(--panel2) 45%,transparent)}
+  .tside .tlogo{font-family:'Space Grotesk';font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+  .tside .tnav{display:flex;flex-direction:column;gap:2px}
+  .tside .tn{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--dim);padding:6px 8px;border-radius:7px}
+  .tside .tn.on{background:var(--panel2);color:var(--ink)} .tside .tn .tni{color:var(--faint);width:14px;text-align:center}
+  .tside .tn .tnc{margin-left:auto;font-family:'JetBrains Mono';font-size:10px;color:var(--faint)}
+  .tmain{padding:15px 17px}
+  .tmh{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+  .tmh h3{font-size:15px;font-weight:600}
+  .tmh .tcount{font-family:'JetBrains Mono';font-size:11px;color:var(--faint)}
+  .tmh .tbtns{margin-left:auto;display:flex;gap:7px}
+  .tmh .tbn{font-family:'JetBrains Mono';font-size:11px;color:var(--dim);border:1px solid var(--line2);border-radius:7px;padding:4px 10px}
+  .tmh .tbn.pri{background:var(--lime);color:var(--lime-ink);border:none;font-weight:600}
+  .tkan{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+  .tkc{background:color-mix(in oklch,var(--panel2) 55%,transparent);border:1px solid var(--line);border-radius:10px;padding:9px}
+  .tkc .tkh{font-family:'JetBrains Mono';font-size:10px;color:var(--faint);text-transform:uppercase;margin-bottom:9px;display:flex;justify-content:space-between}
+  .trec{background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:8px 9px;margin-bottom:7px}
+  .trec .trn{font-size:12px;font-weight:500;color:var(--ink)}
+  .trec .trm{font-size:10.5px;color:var(--faint);font-family:'JetBrains Mono';margin-top:2px}
+  .placeholder-note{margin:0;padding:9px 13px;font-family:'JetBrains Mono';font-size:10.5px;color:var(--faint);border-top:1px solid var(--line);background:var(--panel2)}
+
+  /* ---------- brain search ---------- */
+  .bsearch{display:flex;align-items:center;gap:11px;background:var(--panel);border:1px solid var(--line2);border-radius:12px;padding:12px 15px;margin-top:16px}
+  .bsearch .si{color:var(--lime)}
+  .bsearch input{flex:1;border:none;background:none;color:var(--ink);font-size:15px;outline:none;font-family:Inter}
+  .bsearch input::placeholder{color:var(--faint)}
+  .bsearch .sk{font-family:'JetBrains Mono';font-size:10px;color:var(--faint);border:1px solid var(--line2);border-radius:5px;padding:2px 7px}
+  .bfilters{display:flex;gap:8px;margin:14px 0 4px;flex-wrap:wrap}
+  .bf{font-family:'JetBrains Mono';font-size:11px;color:var(--dim);border:1px solid var(--line2);border-radius:20px;padding:4px 11px}
+  .bf.on{background:var(--lime);color:var(--lime-ink);border-color:var(--lime);font-weight:600}
+  .bres{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+  .br{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:13px 15px;cursor:pointer;transition:border-color .12s}
+  .br:hover{border-color:var(--line2)}
+  .br .brh{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+  .br .brt{font-family:'Space Grotesk';font-weight:600;font-size:14px}
+  .br .brp{font-family:'JetBrains Mono';font-size:10px;color:var(--faint);margin-left:auto}
+  .br .brx{font-size:12.5px;color:var(--dim);line-height:1.5}
+  .br .brx mark{background:color-mix(in oklch,var(--lime) 28%,transparent);color:var(--ink);border-radius:3px;padding:0 2px}
+  .br .brf{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+  .link{font-family:'JetBrains Mono';font-size:10px;color:var(--lime-dim);border:1px solid var(--line);border-radius:6px;padding:2px 8px}
+  .link::before{content:"↳ ";color:var(--faint)}
+
+  /* ---------- schedules ---------- */
+  .schi{display:flex;flex-direction:column;gap:11px;margin-top:16px}
+  .schcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px}
+  .schcard .stile{width:34px;height:34px;border-radius:10px;background:var(--panel2);border:1px solid var(--line2);display:grid;place-items:center;font-size:15px;color:var(--dim);flex:none}
+  .schcard .snm{font-family:'Space Grotesk';font-weight:600;font-size:14px}
+  .schcard .sd{font-size:11.5px;color:var(--faint);font-family:'JetBrains Mono';margin-top:2px}
+  .schcard .stimes{margin-left:auto;text-align:right;font-family:'JetBrains Mono';font-size:11px;color:var(--dim)}
+  .schcard .stimes .nx{color:var(--lime)}
+
+  /* ---------- responsive ---------- */
   .menub{display:none;place-items:center;width:30px;height:30px;border:1px solid var(--line);border-radius:8px;background:none;color:var(--ink);font-size:15px}
+  @media(max-width:1080px){
+    .grid2{grid-template-columns:1fr} .cwrap{grid-template-columns:1fr} .rhist{position:static}
+    .board{grid-template-columns:repeat(5,minmax(150px,1fr))}
+  }
+  @media(max-width:860px){
+    .app{grid-template-columns:1fr}
+    .rail{position:fixed;left:0;top:0;bottom:0;width:var(--rail);z-index:40;transform:translateX(-100%);transition:transform .2s;box-shadow:0 0 40px oklch(0.1 0.01 285/.5)}
+    .rail.open{transform:none}
+    .fleet{grid-template-columns:1fr 1fr}
+    .twenty{grid-template-columns:1fr} .tside{display:none}
+    .tkan{grid-template-columns:1fr 1fr}
+    .menub{display:grid}
+    .cmdk{display:none}
+    .view{padding:18px 16px 60px}
+    .runhead{flex-wrap:wrap}
+  }
+  @media(max-width:520px){ .fleet{grid-template-columns:1fr} .tkan{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
 <div class="app">
+  <!-- ================= RAIL ================= -->
   <aside class="rail" id="rail">
     <div class="brand">
       <div class="b1"><span class="mark">◆</span><span class="nm">AI Marketing Lab OS</span></div>
-      <div class="boot mono"><span class="p">›</span> <span class="c">boot</span> <span id="bootname">aimarketinglab</span>/<span class="cursor"></span></div>
+      <div class="boot mono"><span class="p">›</span> <span class="c">boot</span> aimarketinglab/ <span class="c">wake fleet</span><span class="cursor"></span></div>
     </div>
-    <nav id="nav"></nav>
-    <div class="railfoot"><span class="hbdot pulse" id="rf-dot"></span><span class="mono" id="rf-hb">heartbeat</span></div>
+    <nav>
+      <div class="grp"><span>Home</span></div>
+      <div class="item on" data-go="home"><span class="ic">⌂</span><span class="lb">Founder OS</span><span class="ct">3 need you</span></div>
+
+      <div class="grp"><span>Fleet</span><span class="gc mono">1 live</span></div>
+      <div class="item arow" data-go="console">
+        <span class="av">ZA</span>
+        <div class="meta"><div class="top"><span class="dot idle"></span><span class="id">zayn</span><span class="rl">orch</span></div><div class="task">idle · front door open</div></div>
+      </div>
+      <div class="item arow working on" data-go="console">
+        <span class="av">ST</span>
+        <div class="meta"><div class="top"><span class="dot working"></span><span class="id">steph</span><span class="rl">rev</span></div><div class="task">running · research-engine, 3 drafts queued</div></div>
+      </div>
+      <div class="item arow" data-go="console">
+        <span class="av">KY</span>
+        <div class="meta"><div class="top"><span class="dot idle"></span><span class="id">kyrie</span><span class="rl">media</span></div><div class="task">idle</div></div>
+      </div>
+      <div class="item arow" data-go="console">
+        <span class="av">DR</span>
+        <div class="meta"><div class="top"><span class="dot idle"></span><span class="id">drose</span><span class="rl">design</span></div><div class="task">idle · QA floor 8/10</div></div>
+      </div>
+      <div class="item arow" data-go="console">
+        <span class="av">AN</span>
+        <div class="meta"><div class="top"><span class="dot idle"></span><span class="id">antman</span><span class="rl">content</span></div><div class="task">idle</div></div>
+      </div>
+      <div class="item arow needs" data-go="console">
+        <span class="av">IR</span>
+        <div class="meta"><div class="top"><span class="dot needs"></span><span class="id">ironman</span><span class="rl">ops</span></div><div class="task">needs you · invoice draft</div></div>
+      </div>
+
+      <div class="grp"><span>Workspaces</span></div>
+      <div class="item" data-go="crm"><span class="ic">▦</span><span class="lb">CRM</span><span class="ct">Twenty</span></div>
+      <div class="item" data-go="brain"><span class="ic">❖</span><span class="lb">Brain</span><span class="ct">1,523</span></div>
+      <div class="item" data-go="schedules"><span class="ic">◷</span><span class="lb">Schedules</span><span class="ct">3</span></div>
+    </nav>
+    <div class="railfoot"><span class="dot working"></span><span>heartbeat · staged</span></div>
   </aside>
 
-  <main class="main">
+  <!-- ================= MAIN ================= -->
+  <main class="main" id="main">
     <div class="top">
       <button class="menub" id="menub">☰</button>
-      <div class="path mono">os / <b id="crumb">founder-os</b></div>
-      <div class="cmdk" id="cmdkBtn">Search &amp; jump <span class="kbd">⌘K</span></div>
-      <div class="live"><span class="hbdot pulse"></span><span id="topupd">—</span></div>
+      <div class="path mono">os <span class="sep">/</span> <b id="crumb">founder-os</b></div>
+      <div class="cmdk"><span>Assign, search, or jump</span><span class="kbd">⌘K</span></div>
+      <div class="live"><span class="dot working"></span><span>live</span></div>
       <button class="tbtn" id="theme" title="Theme">◐</button>
     </div>
-    <div class="view" id="view"></div>
+
+    <!-- ============ HOME ============ -->
+    <section class="view on" id="v-home">
+      <div class="vhead"><h1>Founder OS</h1><span class="who">orchestrator · zayn · you sit above the loop</span></div>
+      <div class="counts">
+        <span class="c"><b>6</b> agents</span><span class="c"><b>1</b> <em>live</em></span>
+        <span class="c"><b>88</b> skills</span><span class="c"><b>48</b> gates</span>
+        <span class="c"><b>3</b> <em>need you</em></span><span class="c"><b>3/3</b> integrations</span>
+      </div>
+      <p class="lead">The glanceable state of the agency. Assign a task to any agent and watch it work, approve what ships, with the CRM and the brain one click away. Every send stops for you. Nothing goes to the world on its own.</p>
+
+      <div class="sec"><h2>Missions <span class="rule"></span></h2>
+        <div class="board">
+          <div class="col"><div class="colh"><span>Inbox</span><span class="n">2</span></div>
+            <div class="kc"><div class="who">unrouted</div><div class="t">Warm re-engagement</div><div class="m">Construction · Lane A</div></div>
+            <div class="kc"><div class="who">unrouted</div><div class="t">Q3 case-study deck</div><div class="m">Meridian account</div></div>
+          </div>
+          <div class="col"><div class="colh"><span>Assigned</span><span class="n">1</span></div>
+            <div class="kc"><div class="who">kyrie</div><div class="t">Competitor SEO scan</div><div class="m">Brightpath vertical</div></div>
+          </div>
+          <div class="col"><div class="colh"><span>Working</span><span class="n">1</span></div>
+            <div class="kc hot"><div class="who">steph</div><div class="t">Prospect research</div><div class="m">2 warm, drafting</div><span class="fl lime">running</span></div>
+          </div>
+          <div class="col"><div class="colh"><span>Review</span><span class="n">2</span></div>
+            <div class="kc rev"><div class="who">steph</div><div class="t">LinkedIn re-engage</div><div class="m">Coastline · Lane A</div><span class="fl warn">approve to send</span></div>
+            <div class="kc rev"><div class="who">ironman</div><div class="t">Invoice draft</div><div class="m">Meridian retainer</div><span class="fl warn">approve to send</span></div>
+          </div>
+          <div class="col"><div class="colh"><span>Done</span><span class="n">3</span></div>
+            <div class="kc"><div class="who">drose</div><div class="t">Shell mockup</div><div class="m">QA 9/10, queued</div></div>
+            <div class="kc"><div class="who">antman</div><div class="t">LinkedIn post</div><div class="m">Draft in queue</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec"><h2>Fleet <span class="rule"></span></h2>
+        <div class="fleet">
+          <div class="acard" data-go="console"><div class="r1"><div class="cav">ZA</div><div><div class="cid">zayn</div><div class="crl">orchestrator</div></div><span class="csk crl mono">12 sk</span></div><div class="now"><span class="dot idle"></span>idle · front door open</div></div>
+          <div class="acard working" data-go="console"><div class="r1"><div class="cav">ST</div><div><div class="cid">steph</div><div class="crl">outreach</div></div><div class="hb"><i></i><i></i><i></i><i></i><i></i></div></div><div class="now"><span class="dot working"></span>research-engine · 00:47</div></div>
+          <div class="acard" data-go="console"><div class="r1"><div class="cav">KY</div><div><div class="cid">kyrie</div><div class="crl">paid media + seo</div></div><span class="csk crl mono">14 sk</span></div><div class="now"><span class="dot idle"></span>idle</div></div>
+          <div class="acard" data-go="console"><div class="r1"><div class="cav">DR</div><div><div class="cid">drose</div><div class="crl">design</div></div><span class="csk crl mono">14 sk</span></div><div class="now"><span class="dot idle"></span>idle · QA floor 8/10</div></div>
+          <div class="acard" data-go="console"><div class="r1"><div class="cav">AN</div><div><div class="cid">antman</div><div class="crl">content</div></div><span class="csk crl mono">14 sk</span></div><div class="now"><span class="dot idle"></span>idle</div></div>
+          <div class="acard needs" data-go="console"><div class="r1"><div class="cav">IR</div><div><div class="cid">ironman</div><div class="crl">crm + automation</div></div><span class="csk crl mono">14 sk</span></div><div class="now"><span class="dot needs"></span>needs you · invoice draft</div></div>
+        </div>
+      </div>
+
+      <div class="sec"><h2>State <span class="rule"></span></h2>
+        <div class="grid2">
+          <div>
+            <div class="stream">
+              <div class="ev"><span class="t">00:47</span><span class="ag lime mono">steph</span><span class="tx">Spawned sub-agent <b>intel</b> to verify headcount and funding signal.</span></div>
+              <div class="ev"><span class="t">00:31</span><span class="ag lime mono">steph</span><span class="tx">Skill <b>steph-research-engine</b> enriched 2 prospects, 6 sources.</span></div>
+              <div class="ev"><span class="t">00:12</span><span class="ag lime mono">steph</span><span class="tx">Queried the brain for warm construction prospects, 30d+ since touch.</span></div>
+              <div class="ev"><span class="t">08:31</span><span class="ag sys mono">system</span><span class="tx">Heartbeat scan, weekday fast pass. <b>0 sends.</b></span></div>
+              <div class="ev"><span class="t">08:12</span><span class="ag warn mono">ironman</span><span class="tx">Drafted retainer invoice for Meridian. <b>Awaiting approval.</b></span></div>
+            </div>
+          </div>
+          <div>
+            <div class="card">
+              <h3><span class="tile brain" style="width:18px;height:18px;font-size:10px">▦</span> Pipeline</h3>
+              <div class="subh">from TwentyCRM · self-hosted</div>
+              <div class="pipe">
+                <div class="pl"><span class="plname">New</span><div class="bar"><i style="width:100%"></i></div><span class="pv">14</span></div>
+                <div class="pl"><span class="plname">Contacted</span><div class="bar"><i style="width:64%"></i></div><span class="pv">9</span></div>
+                <div class="pl"><span class="plname">Qualified</span><div class="bar"><i style="width:36%"></i></div><span class="pv">5</span></div>
+                <div class="pl"><span class="plname">Proposal</span><div class="bar"><i style="width:22%"></i></div><span class="pv">3</span></div>
+                <div class="pl"><span class="plname">Won</span><div class="bar"><i style="width:14%"></i></div><span class="pv">2</span></div>
+              </div>
+              <div class="pfoot"><span>open <b>31</b></span><span>updated <b>2m ago</b></span></div>
+              <button class="openbtn" data-go="crm">Open CRM <span class="mono" style="font-size:11px">→</span></button>
+            </div>
+            <div class="card" style="margin-top:14px">
+              <h3><span class="tile brain" style="width:18px;height:18px;font-size:10px">◷</span> Today's crons</h3>
+              <div class="subh">always-on layer · Mini</div>
+              <div class="cron">
+                <div class="cronrow"><div><div class="cn">heartbeat</div><div class="cwhen">08:30 weekday · fast scan</div></div><span class="cst ok">ran 08:31</span></div>
+                <div class="cronrow"><div><div class="cn">curator</div><div class="cwhen">daily 02:00 · brain tidy</div></div><span class="cst ok">ran 02:04</span></div>
+                <div class="cronrow"><div><div class="cn">dream</div><div class="cwhen">weekly Mon 09:00 · full cycle</div></div><span class="cst next">next Mon</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CONSOLE (centerpiece) ============ -->
+    <section class="view" id="v-console">
+      <div class="console">
+        <div class="vhead"><h1>steph</h1><span class="who">outreach · assign a task, then watch it work</span></div>
+
+        <div class="assign">
+          <div class="albl"><span class="tile skill" style="width:16px;height:16px;font-size:9px">▸</span> Assign</div>
+          <textarea rows="2" placeholder="Assign a task to steph, or let zayn route it. Enter to fire.">Surface 2 warm construction-sector prospects, research each, draft a LinkedIn re-engagement for the best fit. Queue for approval, do not send.</textarea>
+          <div class="arow2">
+            <span class="chip"><span class="cav">ST</span> steph</span>
+            <span class="chip route">↳ or route via zayn</span>
+            <button class="runbtn">Run <span class="k">⌘↵</span></button>
+          </div>
+        </div>
+
+        <div class="cwrap">
+          <div>
+            <!-- run header -->
+            <div class="runhead">
+              <div class="rav">ST</div>
+              <div>
+                <div class="rid mono">run <b>#a2f-19</b> · steph · research-engine</div>
+                <div class="rmeta">model claude · started 09:41:12 · 5 tool calls · 0 sends</div>
+              </div>
+              <span class="stbadge"><span class="dot working"></span> working</span>
+              <span class="elapsed mono" id="elapsed">00:47</span>
+              <button class="stopbtn">Stop</button>
+            </div>
+
+            <!-- transcript -->
+            <div class="transcript">
+
+              <div class="node">
+                <div class="turn user"><div class="tav">you</div><div class="tbody"><div class="trole">task</div>Surface 2 warm construction-sector prospects, research each, draft a LinkedIn re-engagement for the best fit. Queue for approval, do not send.</div></div>
+              </div>
+
+              <div class="node">
+                <div class="turn agent"><div class="tav">ZA</div><div class="tbody"><div class="trole">zayn · routed</div><span class="say">Routed to <b style="color:var(--ink)">steph</b>, outreach role. Read-brain-first, draft-only, approval gate on any send.</span></div></div>
+              </div>
+
+              <div class="node">
+                <div class="think mono">Reading the brain for prospect status and voice-of-customer before I draft anything.</div>
+              </div>
+
+              <!-- brain query -->
+              <div class="node tool">
+                <div class="tc">
+                  <div class="tch"><span class="tile brain">❖</span><span class="tctype">brain query</span><span class="tcname">gBrain</span><span class="tctime mono ok">3 hits · 210ms</span></div>
+                  <div class="tcb">
+                    <div class="qline mono"><span class="qk">search</span> "<span class="qv">construction developer · warm · last_touch &gt; 30d</span>"</div>
+                    <div class="qres">
+                      <div class="qr"><div class="qt">Prospect note · Coastline Developers <span class="path">brain/people/coastline.md</span></div><div class="rel"><i style="width:92%"></i></div><div class="qs mono">0.92</div></div>
+                      <div class="qr"><div class="qt">Prospect note · Brightpath Infra <span class="path">brain/people/brightpath.md</span></div><div class="rel"><i style="width:78%"></i></div><div class="qs mono">0.78</div></div>
+                      <div class="qr"><div class="qt">Voice-of-customer · construction ICP <span class="path">brain/voc/construction.md</span></div><div class="rel"><i style="width:71%"></i></div><div class="qs mono">0.71</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- skill -->
+              <div class="node tool">
+                <div class="tc">
+                  <div class="tch"><span class="tile skill">▸</span><span class="tctype">skill</span><span class="tcname">steph-research-engine</span><span class="tctime mono ok">done · 4.2s</span></div>
+                  <div class="tcb">
+                    <div class="kv">
+                      <span class="k">prospects <b>2</b></span><span class="k">depth <b>standard</b></span><span class="k">channel <b>linkedin-first</b></span>
+                    </div>
+                    <div class="outsum">Enriched both prospects, <b>role</b>, <b>recent trigger</b>, and <b>mutual context</b>. Pulled verbatim vocabulary from the voice-of-customer note, no paraphrase into marketing speak.</div>
+                    <div class="badgerow"><span class="bdg">sources · 6</span><span class="bdg">verbatim terms · 8</span><span class="bdg lime">ICP verified</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- sub-agent -->
+              <div class="node tool">
+                <div class="tc">
+                  <div class="tch"><span class="tile sub">◇</span><span class="tctype">sub-agent</span><span class="tcname">intel</span><span class="tctime mono ok">returned · 2.8s</span></div>
+                  <div class="tcb">
+                    <div class="outsum" style="margin-bottom:2px">Task: verify company headcount and any recent funding signal for the top-ranked fit.</div>
+                    <div class="nested">
+                      <div class="nstep mono"><span class="ok">✓</span> <span class="st">web search</span> · company + headcount</div>
+                      <div class="nstep mono"><span class="ok">✓</span> <span class="st">web fetch</span> · about page, team page</div>
+                      <div class="nres">Headcount <b>40 to 60</b>, no funding event on record, ICP-fit <b>8/10</b>. Recent trigger: new project win posted 6 days ago.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="node">
+                <div class="think mono">Coastline is the stronger fit. Drafting a LinkedIn re-engagement in ZippyScale voice. No send.</div>
+              </div>
+
+              <!-- file write / diff -->
+              <div class="node tool">
+                <div class="tc">
+                  <div class="tch"><span class="tile file">▤</span><span class="tctype">write</span><span class="tcname">run-logs/queue/2026-07-19-steph.md</span><span class="tctime mono ok">+18 lines</span></div>
+                  <div class="tcb">
+                    <div class="difff">
+                      <div class="dh"><span>draft · linkedin re-engagement</span><span>lane A</span></div>
+                      <div class="dl add">Saw the new project win, congrats to the Coastline team.</div>
+                      <div class="dl add">Last we spoke, attribution on inbound was the gap.</div>
+                      <div class="dl add">We built a tracking setup for a similar developer that</div>
+                      <div class="dl add">tied every enquiry back to source. Worth a look?</div>
+                      <div class="dl ctx">The ZippyScale Team</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- result -->
+              <div class="node result">
+                <div class="tc res">
+                  <div class="tch"><span class="tile result">✓</span><span class="tctype">result</span><span class="tcname">3 drafts queued</span><span class="tctime mono">complete</span></div>
+                  <div class="tcb">
+                    <div class="reslist">
+                      <div class="rl2"><span class="rn">A</span><b>Coastline Developers</b> · LinkedIn re-engagement, ready for review</div>
+                      <div class="rl2"><span class="rn">B</span><b>Brightpath Infra</b> · LinkedIn opener, held for a second trigger</div>
+                      <div class="rl2"><span class="rn">C</span><b>Coastline Developers</b> · email variant, backup channel</div>
+                    </div>
+                    <div class="rstat mono"><b>3 queued</b> · <span class="sent">0 sent</span> · nothing leaves without your approval</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- review / approve -->
+              <div class="node review">
+                <div class="tc rev">
+                  <div class="tch"><span class="tile review">⏸</span><span class="tctype">review · outbound</span><span class="tcname">draft A · Coastline</span><span class="tctime mono">needs you</span></div>
+                  <div class="tcb">
+                    <div class="draftbox">
+                      <div class="dto mono">to · Coastline Developers · linkedin dm</div>
+                      Saw the new project win, congrats to the Coastline team. Last we spoke, attribution on inbound was the gap. We built a tracking setup for a similar developer that tied every enquiry back to source. Worth a quick look this week?
+                    </div>
+                    <div class="gate mono"><span>⚠</span> Approve authorizes the send. Nothing sends until you click.</div>
+                    <div class="actions">
+                      <button class="approve">Approve &amp; send</button>
+                      <button class="ghost">Edit draft</button>
+                      <button class="skip mono">Skip for now</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="node live">
+                <div class="turn agent"><div class="tav">ST</div><div class="tbody"><div class="trole">steph · live</div><span class="say">Standing by. Approve draft A to send, or assign the next task above.</span></div></div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- run history -->
+          <aside class="rhist">
+            <h3><span>Run history</span><span>steph</span></h3>
+            <div class="hr live on"><span class="hi"></span><div><div class="hid mono">#a2f-19</div><div class="hd">Surface 2 warm prospects, draft re-engagement</div><div class="ht mono">now · working</div></div></div>
+            <div class="hr done"><span class="hi"></span><div><div class="hid mono">#a2e-08</div><div class="hd">Weekly outbound cycle, fast pass</div><div class="ht mono">08:31 · 2 drafted, 0 sent</div></div></div>
+            <div class="hr done"><span class="hi"></span><div><div class="hid mono">#a2c-44</div><div class="hd">Enrich Brightpath account note</div><div class="ht mono">yesterday · done</div></div></div>
+            <div class="hr queued"><span class="hi"></span><div><div class="hid mono">#a2b-17</div><div class="hd">Discovery follow-up sequence draft</div><div class="ht mono">held · needs input</div></div></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CRM ============ -->
+    <section class="view" id="v-crm">
+      <div class="vhead"><h1>CRM</h1><span class="who">TwentyCRM · self-hosted on the Mini · CRM and pipeline only</span></div>
+      <p class="lead">The full Twenty front-end, embedded. ironman writes leads in over REST, you work them here. WhatsApp stays on OpenWA, automation stays on n8n and the agents.</p>
+      <div class="frame">
+        <div class="fbar">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="furl mono">crm.<b>local</b> · twenty · self-hosted</div>
+          <span class="ftag mono">embedded</span>
+        </div>
+        <div class="twenty">
+          <div class="tside">
+            <div class="tlogo"><span class="mark" style="width:20px;height:20px;font-size:11px">T</span> Twenty</div>
+            <div class="tnav">
+              <div class="tn on"><span class="tni">◇</span> Opportunities <span class="tnc mono">31</span></div>
+              <div class="tn"><span class="tni">◈</span> Companies <span class="tnc mono">24</span></div>
+              <div class="tn"><span class="tni">◦</span> People <span class="tnc mono">58</span></div>
+              <div class="tn"><span class="tni">▤</span> Notes <span class="tnc mono">12</span></div>
+              <div class="tn"><span class="tni">◷</span> Tasks <span class="tnc mono">7</span></div>
+            </div>
+          </div>
+          <div class="tmain">
+            <div class="tmh">
+              <h3>Opportunities</h3><span class="tcount mono">31 records · all | live</span>
+              <div class="tbtns"><span class="tbn mono">filter</span><span class="tbn mono pri">+ new</span></div>
+            </div>
+            <div class="tkan">
+              <div class="tkc"><div class="tkh mono"><span>New</span><span>14</span></div>
+                <div class="trec"><div class="trn">Acme Builders</div><div class="trm mono">inbound · lane A</div></div>
+                <div class="trec"><div class="trn">Meridian Group</div><div class="trm mono">referral</div></div>
+              </div>
+              <div class="tkc"><div class="tkh mono"><span>Contacted</span><span>9</span></div>
+                <div class="trec"><div class="trn">Coastline Dev</div><div class="trm mono">linkedin · warm</div></div>
+                <div class="trec"><div class="trn">Brightpath Infra</div><div class="trm mono">linkedin</div></div>
+              </div>
+              <div class="tkc"><div class="tkh mono"><span>Qualified</span><span>5</span></div>
+                <div class="trec"><div class="trn">Meridian Group</div><div class="trm mono">call booked</div></div>
+              </div>
+              <div class="tkc"><div class="tkh mono"><span>Proposal</span><span>3</span></div>
+                <div class="trec"><div class="trn">Acme Builders</div><div class="trm mono">deck sent</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="placeholder-note mono">Placeholder frame. Phase 3 mounts the live Twenty UI here over docker compose. Company names shown are design placeholders.</p>
+      </div>
+    </section>
+
+    <!-- ============ BRAIN ============ -->
+    <section class="view" id="v-brain">
+      <div class="vhead"><h1>Brain</h1><span class="who">gBrain · 1,523 pages · local embeddings · search-first</span></div>
+      <p class="lead">The context every agent reads at boot: client status, offer, voice-of-customer, past decisions. Search first, read the page, cite or skip. The brain is queried, never guessed.</p>
+      <div class="bsearch">
+        <span class="si">❖</span>
+        <input placeholder="Search the brain. Try: voice of customer, construction" value="voice of customer construction">
+        <span class="sk mono">↵</span>
+      </div>
+      <div class="bfilters">
+        <span class="bf on mono">all</span><span class="bf mono">people</span><span class="bf mono">voc</span><span class="bf mono">decisions</span><span class="bf mono">offers</span><span class="bf mono">run-logs</span>
+      </div>
+      <div class="bres">
+        <div class="br">
+          <div class="brh"><span class="brt">Voice-of-customer · construction ICP</span><span class="brp mono">brain/voc/construction.md · 0.91</span></div>
+          <div class="brx">Prospects describe the gap as <mark>attribution on inbound</mark>, not "marketing". Verbatim: "we get calls but no idea which ad", "spend without a source". Use their words, do not paraphrase.</div>
+          <div class="brf"><span class="link mono">construction.md</span><span class="link mono">coastline.md</span><span class="link mono">offer-attribution.md</span></div>
+        </div>
+        <div class="br">
+          <div class="brh"><span class="brt">Prospect note · Coastline Developers</span><span class="brp mono">brain/people/coastline.md · 0.88</span></div>
+          <div class="brx">Warm, last touch 34 days. Interested in <mark>enquiry-to-source tracking</mark>. New project win posted this week, a natural re-engagement trigger.</div>
+          <div class="brf"><span class="link mono">construction.md</span><span class="link mono">run-logs/steph</span></div>
+        </div>
+        <div class="br">
+          <div class="brh"><span class="brt">Decision · outbound is LinkedIn-first</span><span class="brp mono">brain/decisions/channel.md · 0.74</span></div>
+          <div class="brx">LinkedIn DM reply rate beats cold email for this ICP, so <mark>lead with LinkedIn</mark>, email is the backup channel. Two channels only, both draft-only.</div>
+          <div class="brf"><span class="link mono">channel.md</span><span class="link mono">invariants</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SCHEDULES ============ -->
+    <section class="view" id="v-schedules">
+      <div class="vhead"><h1>Schedules</h1><span class="who">always-on layer · Mini · drafts queue, nothing sends</span></div>
+      <p class="lead">Scheduled work is most of what a fleet does. An external scheduler on the Mini wakes a headless run, it makes progress, writes an append-only log, and exits. Claude is never a persistent server.</p>
+      <div class="schi">
+        <div class="schcard">
+          <div class="stile">◷</div>
+          <div><div class="snm">heartbeat</div><div class="sd mono">weekday 08:30 · fast scan · surfaces and drafts</div></div>
+          <div class="stimes"><div>last <span style="color:var(--ok)">ran 08:31</span></div><div class="nx">next tomorrow 08:30</div></div>
+        </div>
+        <div class="schcard">
+          <div class="stile">❖</div>
+          <div><div class="snm">curator</div><div class="sd mono">daily 02:00 · brain tidy · dedup and link</div></div>
+          <div class="stimes"><div>last <span style="color:var(--ok)">ran 02:04</span></div><div class="nx">next tonight 02:00</div></div>
+        </div>
+        <div class="schcard">
+          <div class="stile">◇</div>
+          <div><div class="snm">dream</div><div class="sd mono">weekly Mon 09:00 · full steph outbound cycle</div></div>
+          <div class="stimes"><div>last <span style="color:var(--faint)">staged</span></div><div class="nx">next Mon 09:00</div></div>
+        </div>
+      </div>
+    </section>
+
   </main>
 </div>
 
-<div class="scrim" id="scrim"><div class="pal">
-  <input id="palIn" placeholder="Jump to a workspace, an agent, or a command…" autocomplete="off">
-  <div class="plist" id="plist"></div>
-</div></div>
-
 <script>
-const $=s=>document.querySelector(s), ce=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e};
-const esc=s=>(s==null?'':(''+s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-const ICON={'founder-os':'⌂','outreach-os':'◈','growth-os':'▲','content-os':'✎','design-os':'◐','ops-os':'⚙','brain-os':'❖','kernel':'⌘','schedules':'◷'};
-let S=null, cur='founder-os';
+  // view switch
+  const views={home:'v-home',console:'v-console',crm:'v-crm',brain:'v-brain',schedules:'v-schedules'};
+  const crumbs={home:'founder-os',console:'steph',crm:'crm',brain:'brain',schedules:'schedules'};
+  function go(id){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+    document.getElementById(views[id]).classList.add('on');
+    document.getElementById('crumb').textContent=crumbs[id];
+    document.querySelectorAll('.rail .item').forEach(i=>i.classList.remove('on'));
+    // reactivate rail markers
+    if(id==='home') document.querySelector('.item[data-go="home"]').classList.add('on');
+    if(id==='console') document.querySelector('.arow.working').classList.add('on');
+    if(id==='crm') document.querySelector('.item[data-go="crm"]').classList.add('on');
+    if(id==='brain') document.querySelector('.item[data-go="brain"]').classList.add('on');
+    if(id==='schedules') document.querySelector('.item[data-go="schedules"]').classList.add('on');
+    document.getElementById('rail').classList.remove('open');
+    document.getElementById('main').scrollTop=0;
+  }
+  document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>go(el.getAttribute('data-go'))));
+  document.getElementById('menub').onclick=()=>document.getElementById('rail').classList.toggle('open');
+  document.getElementById('theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');};
 
-const FB={name:"AI Marketing Lab OS",boot:"aimarketinglab",updated:"—",heartbeat:"staged",infra:{brain:true,whatsapp:true,automation:true},spine:["system.md","invariants.md","agency.yaml","brain/connect.md"],stats:{os:6,agents:6,skills:88,gates:48,queue:1,integrations:"3/3"},os:[{id:"founder-os",label:"Founder OS",agent:"zayn",role:"Orchestrator",counts:[["agents",6],["skills",88],["gates",48],["queued",1]],desc:"The shell. Dispatches the fleet, holds the missions board, the digest, the activity stream."},{id:"outreach-os",label:"Outreach OS",agent:"steph",role:"Outreach",counts:[["skills",20],["queued",1],["pilots","0/3"]],desc:"Surface, research, draft, queue. Every send stops for approval."},{id:"growth-os",label:"Growth OS",agent:"kyrie",role:"Paid media + SEO",counts:[["skills",14],["campaigns",0]],desc:"Meta + Google + SEO. No spend without approval."},{id:"content-os",label:"Content OS",agent:"antman",role:"Content",counts:[["skills",14],["queued",0]],desc:"IG / X / LinkedIn / YouTube. Never publishes on its own."},{id:"design-os",label:"Design OS",agent:"drose",role:"Design",counts:[["skills",14],["QA floor","8/10"]],desc:"Landing pages, creatives, decks. Rendered, QA'd, queued."},{id:"ops-os",label:"Ops OS",agent:"ironman",role:"CRM + automation",counts:[["skills",14],["integrations","3/3"]],desc:"CRM, automations, invoicing, integration health."}],system:[{id:"brain-os",label:"Brain OS",counts:[["pages",1523],["embedded","100%"]],desc:"The second brain: gBrain + Obsidian. The context every agent reads."},{id:"kernel",label:"Kernel",counts:[["invariants",48],["categories",7]],desc:"The spine. Judgment encoded as blocking gates."},{id:"schedules",label:"Schedules",counts:[["heartbeat","staged"]],desc:"The always-on layer. Drafts queue; nothing sends."}],agents:[{id:"zayn",os:"founder-os",role:"Orchestrator",skills:12,now:"idle"},{id:"steph",os:"outreach-os",role:"Outreach",skills:20,now:"1 draft queued"},{id:"kyrie",os:"growth-os",role:"Paid media + SEO",skills:14,now:"idle"},{id:"drose",os:"design-os",role:"Design",skills:14,now:"idle"},{id:"antman",os:"content-os",role:"Content",skills:14,now:"idle"},{id:"ironman",os:"ops-os",role:"CRM + automation",skills:14,now:"idle"}],missions:{columns:["Surfaced","Researched","Drafted","Review","Queued","Booked"],cards:[{col:"Queued",os:"outreach-os",agent:"steph",label:"Warm re-engagement",meta:"Construction developer · Lane A",flag:"awaiting approval"}]},activity:[{when:"—",agent:"steph",event:"Outbound cycle: surfaced 2, drafted 1, skipped 1. 1 draft queued. Nothing sent."},{when:"—",agent:"system",event:"Six agents ready. Brain, WhatsApp, automation online."}],gates:[{cat:"Outbound & approval",n:3,sample:"Never send without explicit approval"},{cat:"Truth & fabrication",n:8,sample:"Never invent case studies or numbers"},{cat:"Quality & QA",n:8,sample:"QA >= 8/10 before it ships"},{cat:"Format & deliverable",n:9,sample:"Formatted Docs, GitHub Pages only"},{cat:"Copy & brand",n:9,sample:"ZippyScale voice, no em dashes"},{cat:"Client & data",n:7,sample:"No credentials or PII in outputs"},{cat:"Execution",n:4,sample:"Autonomous after spec; max 2 revisions"}]};
-
-function countStr(c){return c.map(([k,v])=>`<span class="c"><b>${esc(v)}</b> ${esc(k)}</span>`).join('');}
-function renderNav(){
-  const n=$('#nav'); n.innerHTML='';
-  n.appendChild(ce('div','grp','Workspaces'));
-  S.os.forEach(o=>n.appendChild(navItem(o,o.counts[0])));
-  n.appendChild(ce('div','grp','System'));
-  S.system.forEach(o=>n.appendChild(navItem(o,o.counts[0])));
-}
-function navItem(o,firstCount){
-  const el=ce('div','item'+(o.id===cur?' on':''));
-  el.innerHTML=`<span class="ic">${ICON[o.id]||'•'}</span><span class="lb">${esc(o.label)}</span>`+
-    (firstCount?`<span class="ct">${esc(firstCount[1])}</span>`:'');
-  el.onclick=()=>go(o.id);
-  return el;
-}
-function board(cards,cols){
-  return `<div class="board">`+cols.map(col=>{
-    const cs=cards.filter(c=>c.col===col);
-    return `<div class="col"><div class="colh"><span>${esc(col)}</span><span class="n">${cs.length}</span></div>`+
-      (cs.length?cs.map(k=>`<div class="kc${k.flag?' hot':''}"><div class="who">${esc(k.agent||'')}</div><div class="t">${esc(k.label)}</div><div class="m">${esc(k.meta||'')}</div>${k.flag?`<span class="fl">${esc(k.flag)}</span>`:''}</div>`).join(''):`<div class="cempty">—</div>`)+
-      `</div>`;
-  }).join('')+`</div>`;
-}
-function stream(evs){
-  return `<div class="stream">`+evs.map(e=>`<div class="ev"><span class="t">${esc(e.when)}</span><span class="ag">${esc(e.agent)}</span><span class="tx">${esc(e.event)}</span></div>`).join('')+`</div>`;
-}
-function agentPanel(a){
-  const ini=a.id.slice(0,2).toUpperCase();
-  return `<div class="apanel"><div class="big">${ini}</div>
-    <div><div class="nm">${esc(a.id)}</div><div class="su mono">${esc(a.role)} · ${a.skills} skills · <span style="color:var(--ok)">●</span> ${esc(a.now)}</div></div>
-    <button class="runbtn" onclick="alert('Runs execute in the private control panel on the Mini. This public view is read-only.')">▸ Run</button></div>`;
-}
-
-function viewFounder(){
-  const st=S.stats;
-  return `<div class="vhead"><h1>Founder OS</h1><span class="who">orchestrator · zayn</span></div>
-    <div class="counts"><span class="c"><b>${st.os}</b> workspaces</span><span class="c"><b>${st.agents}</b> agents</span><span class="c"><b>${st.skills}</b> skills</span><span class="c"><b>${st.gates}</b> gates</span><span class="c"><b>${st.queue}</b> <span>queued</span></span><span class="c"><b>${st.integrations}</b> integrations</span></div>
-    <p class="lead">The shell. Six named workspaces, each an OS with its own agent, sharing one brain and one set of governance gates. This runs a live agency, so the results are the proof, not a template's claims.</p>
-    <div class="sec"><h2>Fleet</h2><div class="fleet">${S.agents.map(a=>`<div class="acard" onclick="go('${a.os}')"><div class="r1"><div class="av">${a.id.slice(0,2).toUpperCase()}</div><div><div class="id">${esc(a.id)}</div><div class="rl">${esc(a.role)}</div></div><div class="sk">${a.skills} sk</div></div><div class="now"><span class="hbdot"></span>${esc(a.now)}</div></div>`).join('')}</div></div>
-    <div class="sec"><h2>Missions</h2>${board(S.missions.cards,S.missions.columns)}</div>
-    <div class="sec"><h2>Activity</h2>${stream(S.activity)}</div>
-    <div class="sec"><h2>Not a template</h2><div class="diff"><div class="dc"><h4>A template</h4><ul><li>Prompts you configure yourself</li><li>Unverified claims of results</li><li>No memory, no proof it ran</li></ul></div><div class="dc ours"><h4>This OS</h4><ul><li>Runs a real agency, live</li><li>Honest run logs, every action recorded</li><li>A postgres brain, gate-checked judgment</li></ul></div></div></div>`;
-}
-function viewOS(o){
-  const a=S.agents.find(x=>x.os===o.id);
-  const mine=S.missions.cards.filter(c=>c.os===o.id);
-  return `<div class="vhead"><h1>${esc(o.label)}</h1><span class="who">${esc(o.role)} · ${esc(o.agent)}</span></div>
-    <div class="counts">${countStr(o.counts)}</div>
-    <p class="lead">${esc(o.desc)}</p>
-    ${a?`<div class="sec"><h2>Agent</h2>${agentPanel(a)}</div>`:''}
-    <div class="sec"><h2>Pipeline</h2>${board(mine,S.missions.columns)}</div>
-    <div class="sec"><h2>Activity</h2>${stream(S.activity.filter(e=>e.agent===o.agent||e.agent==='system'))}</div>`;
-}
-function viewBrain(o){
-  return `<div class="vhead"><h1>Brain OS</h1><span class="who">context layer</span></div>
-    <div class="counts">${countStr(o.counts)}</div>
-    <p class="lead">${esc(o.desc)}</p>
-    <div class="sec"><h2>Vault</h2><div class="panel mono" style="font-size:12.5px;color:var(--dim);line-height:1.9">
-      gbrain@postgres · 1,523 pages · embedded 100% (local, free)<br>obsidian · Sandy-Second-Brain (iCloud) + ~/second-brain (Syncthing)<br>client-status-truth · single source of truth, re-queried before any client work</div></div>
-    <div class="note">The brain is queried, never guessed. Every agent reads it at boot: client status, offer, voice-of-customer, past decisions. Search first, assume-present, cite or skip.</div>`;
-}
-function viewKernel(o){
-  return `<div class="vhead"><h1>Kernel</h1><span class="who">the spine</span></div>
-    <div class="counts">${countStr(o.counts)}</div>
-    <p class="lead">Judgment encoded as hard gates that block a skill from running on thin context or a rule violation. This is the real IP: not the prompts, the discipline.</p>
-    <div class="sec"><h2>Spine (read in order at boot)</h2><div class="spine">${S.spine.map(f=>`<span class="file">${esc(f)}</span>`).join('')}</div></div>
-    <div class="sec"><h2>Governance gates · ${S.stats.gates}</h2><div class="gates">${S.gates.map(g=>`<div class="gate"><span class="gn">${g.n}</span><div><div class="gc">${esc(g.cat)}</div><div class="gs">${esc(g.sample)}</div></div></div>`).join('')}</div></div>`;
-}
-function viewSchedules(o){
-  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  return `<div class="vhead"><h1>Schedules</h1><span class="who">always-on layer</span></div>
-    <div class="counts">${countStr(o.counts)}</div>
-    <p class="lead">${esc(o.desc)} An external scheduler on the Mini wakes a headless run, it makes progress, writes an append-only log, and exits. Claude is never a persistent server.</p>
-    <div class="sec"><h2>Heartbeat · ${esc(S.heartbeat)}</h2>
-    <div class="panel"><div class="counts" style="margin:0">
-      <span class="c">daily · <b>08:30</b> weekdays · fast scan</span>
-      <span class="c">weekly · <b>Mon 09:00</b> · full steph cycle</span></div>
-      <div class="note" style="margin-top:12px">Staged, not loaded. Activation is a single command; drafts land in the queue, nothing sends.</div></div></div>`;
-}
-
-function render(){
-  $('#topupd').textContent=S.updated;
-  $('#bootname').textContent=S.boot;
-  $('#rf-hb').textContent='heartbeat '+S.heartbeat;
-  $('#rf-dot').className='hbdot'+(S.heartbeat==='live'?' pulse':'');
-  renderNav();
-  const all=[...S.os,...S.system];
-  const o=all.find(x=>x.id===cur)||S.os[0];
-  $('#crumb').textContent=cur;
-  let html;
-  if(cur==='founder-os') html=viewFounder();
-  else if(cur==='brain-os') html=viewBrain(o);
-  else if(cur==='kernel') html=viewKernel(o);
-  else if(cur==='schedules') html=viewSchedules(o);
-  else html=viewOS(o);
-  $('#view').innerHTML=html;
-  $('#view').scrollTop=0;
-}
-function go(id){cur=id;$('#rail').classList.remove('open');render();}
-
-/* command palette */
-const pal={open:false,sel:0,items:[]};
-function palItems(){
-  const os=[...S.os,...S.system].map(o=>({t:o.label,s:o.id,ic:ICON[o.id]||'•',go:o.id}));
-  const ag=S.agents.map(a=>({t:a.id,s:a.role,ic:'◇',go:a.os}));
-  return [...os,...ag];
-}
-function openPal(){pal.open=true;pal.sel=0;$('#scrim').classList.add('open');$('#palIn').value='';filterPal('');$('#palIn').focus();}
-function closePal(){pal.open=false;$('#scrim').classList.remove('open');}
-function filterPal(q){
-  q=q.toLowerCase();
-  pal.items=palItems().filter(i=>(i.t+i.s).toLowerCase().includes(q));
-  pal.sel=Math.min(pal.sel,Math.max(0,pal.items.length-1));
-  $('#plist').innerHTML=pal.items.map((i,x)=>`<div class="prow${x===pal.sel?' sel':''}" data-i="${x}"><span class="ic">${i.ic}</span><span>${esc(i.t)}</span><span class="sub">${esc(i.s)}</span><span class="k">↵</span></div>`).join('')||'<div class="prow"><span class="sub">no match</span></div>';
-  [...$('#plist').children].forEach(r=>{const i=r.dataset.i;if(i!=null){r.onclick=()=>{go(pal.items[i].go);closePal();};}});
-}
-addEventListener('keydown',e=>{
-  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();pal.open?closePal():openPal();return;}
-  if(!pal.open)return;
-  if(e.key==='Escape')closePal();
-  else if(e.key==='ArrowDown'){pal.sel=Math.min(pal.sel+1,pal.items.length-1);filterPal($('#palIn').value);}
-  else if(e.key==='ArrowUp'){pal.sel=Math.max(pal.sel-1,0);filterPal($('#palIn').value);}
-  else if(e.key==='Enter'&&pal.items[pal.sel]){go(pal.items[pal.sel].go);closePal();}
-});
-$('#palIn').addEventListener('input',e=>{pal.sel=0;filterPal(e.target.value);});
-$('#cmdkBtn').onclick=openPal; $('#scrim').onclick=e=>{if(e.target===$('#scrim'))closePal();};
-$('#menub').onclick=()=>$('#rail').classList.toggle('open');
-$('#theme').onclick=()=>{const d=document.documentElement.getAttribute('data-theme')==='dark';document.documentElement.setAttribute('data-theme',d?'light':'dark');};
-
-fetch('state.json',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(d=>{S=d;render();}).catch(()=>{S=FB;render();});
+  // ticking elapsed timer on the live run (liveness cue)
+  let s=47; setInterval(()=>{s++;const m=String(Math.floor(s/60)).padStart(2,'0'),ss=String(s%60).padStart(2,'0');const e=document.getElementById('elapsed');if(e)e.textContent=m+':'+ss;},1000);
 </script>
 </body>
 </html>
