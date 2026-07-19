@@ -865,7 +865,27 @@
     const tr=q('#v-console .transcript'); if(tr)tr.innerHTML='<div class="node"><div class="think mono">Dispatching to '+esc(current)+'…</div></div>';
     api('/api/run',{agent:current,task:task||undefined}).then(()=>{if(ta)ta.value='';setTimeout(poll,600);}).catch(e=>{if(tr)tr.innerHTML='<div class="node"><div class="think mono">Run blocked ('+esc(e)+'). If 403, add ?token=… ; if the run 401s, claude needs login on this box.</div></div>';});
   }
-  function poll(){api('/api/state').then(s=>{renderRail(s);if(document.getElementById('v-console').classList.contains('on'))renderConsole(s);}).catch(()=>{});}
+  function poll(){api('/api/state').then(s=>{renderRail(s);if(v('v-console'))renderConsole(s);if(v('v-home'))renderHome(s);}).catch(()=>{});}
+  function v(id){return document.getElementById(id).classList.contains('on');}
+  function renderHome(s){
+    const cols=document.querySelectorAll('#v-home .board .col'), q=s.queue||[], run=(s.jobs||[]).filter(j=>j.status==='running');
+    if(cols.length>=5){
+      let h='<div class="colh"><span>Review</span><span class="n">'+q.length+'</span></div>';
+      q.forEach(it=>{const who=(it.file.replace(/^\d{4}-\d{2}-\d{2}-/,'').split(/[-.]/)[0])||'agent';
+        h+='<div class="kc rev"><div class="who">'+esc(who)+'</div><div class="t">'+esc(it.file.replace(/^\d{4}-\d{2}-\d{2}-/,'').replace(/\.md$/,''))+'</div><button class="approve" data-ap="'+esc(it.file)+'">approve</button></div>';});
+      cols[3].innerHTML=h;
+      let hw='<div class="colh"><span>Working</span><span class="n">'+run.length+'</span></div>';
+      run.forEach(j=>{hw+='<div class="kc"><div class="who">'+esc(j.agent)+'</div><div class="t">'+esc(((j.task||'run')+'').slice(0,40))+'</div><div class="m">'+(j.tools||0)+' tools</div></div>';});
+      cols[2].innerHTML=hw;
+    }
+    const by={};(s.jobs||[]).forEach(j=>{if(!by[j.agent]||j.started>by[j.agent].started)by[j.agent]=j;});
+    document.querySelectorAll('#v-home .acard').forEach(c=>{
+      const id=(c.querySelector('.cid')||{}).textContent, j=by[id], now=c.querySelector('.now'); if(!j||!now)return;
+      const cls=j.status==='running'?'working':'idle';
+      now.innerHTML='<span class="dot '+cls+'"></span>'+(j.status==='running'?'running · '+((j.task||'')+'').slice(0,24):'idle');
+    });
+    document.querySelectorAll('#v-home [data-ap]').forEach(b=>{b.onclick=()=>{if(confirm('Approve '+b.dataset.ap+'? This records your send authorization.'))api('/api/approve',{file:b.dataset.ap}).then(()=>poll());};});
+  }
   function renderRail(s){
     const by={}; (s.jobs||[]).forEach(j=>{if(!by[j.agent]||j.started>by[j.agent].started)by[j.agent]=j;});
     document.querySelectorAll('.arow[data-go="console"]').forEach(row=>{
