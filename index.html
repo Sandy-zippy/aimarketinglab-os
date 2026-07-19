@@ -422,16 +422,16 @@
     </div>
     <nav>
       <div class="grp"><span>Home</span></div>
-      <div class="item on" data-go="home"><span class="ic">⌂</span><span class="lb">Founder OS</span><span class="ct">3 need you</span></div>
+      <div class="item on" data-go="home"><span class="ic">⌂</span><span class="lb">Founder OS</span><span class="ct">—</span></div>
 
-      <div class="grp"><span>Fleet</span><span class="gc mono">1 live</span></div>
+      <div class="grp"><span>Fleet</span><span class="gc mono">0 live</span></div>
       <div class="item arow" data-go="console">
         <span class="av">ZA</span>
         <div class="meta"><div class="top"><span class="dot idle"></span><span class="id">zayn</span><span class="rl">orch</span></div><div class="task">idle · front door open</div></div>
       </div>
-      <div class="item arow working on" data-go="console">
+      <div class="item arow" data-go="console">
         <span class="av">ST</span>
-        <div class="meta"><div class="top"><span class="dot working"></span><span class="id">steph</span><span class="rl">rev</span></div><div class="task">running · research-engine, 3 drafts queued</div></div>
+        <div class="meta"><div class="top"><span class="dot idle"></span><span class="id">steph</span><span class="rl">rev</span></div><div class="task">idle</div></div>
       </div>
       <div class="item arow" data-go="console">
         <span class="av">KY</span>
@@ -445,9 +445,9 @@
         <span class="av">AN</span>
         <div class="meta"><div class="top"><span class="dot idle"></span><span class="id">antman</span><span class="rl">content</span></div><div class="task">idle</div></div>
       </div>
-      <div class="item arow needs" data-go="console">
+      <div class="item arow" data-go="console">
         <span class="av">IR</span>
-        <div class="meta"><div class="top"><span class="dot needs"></span><span class="id">ironman</span><span class="rl">ops</span></div><div class="task">needs you · invoice draft</div></div>
+        <div class="meta"><div class="top"><span class="dot idle"></span><span class="id">ironman</span><span class="rl">ops</span></div><div class="task">idle</div></div>
       </div>
 
       <div class="grp"><span>Workspaces</span></div>
@@ -472,43 +472,31 @@
     <section class="view on" id="v-home">
       <div class="vhead"><h1>Founder OS</h1><span class="who">orchestrator · zayn · you sit above the loop</span></div>
       <div class="counts">
-        <span class="c"><b>6</b> agents</span><span class="c"><b>1</b> <em>live</em></span>
-        <span class="c"><b>88</b> skills</span><span class="c"><b>48</b> gates</span>
-        <span class="c"><b>3</b> <em>need you</em></span><span class="c"><b>3/3</b> integrations</span>
+        <span class="c"><b>6</b> agents</span><span class="c"><b>0</b> <em>live</em></span>
+        <span class="c"><b>—</b> skills</span><span class="c"><b>—</b> gates</span>
+        <span class="c"><b>0</b> <em>need you</em></span><span class="c"><b>—</b> integrations</span>
       </div>
       <p class="lead">The glanceable state of the agency. Assign a task to any agent and watch it work, approve what ships, with the CRM and the brain one click away. Every send stops for you. Nothing goes to the world on its own.</p>
 
       <div class="sec"><h2>Missions <span class="rule"></span></h2>
+        <!-- static defaults are empty; the JS rebuilds these columns from real state -->
         <div class="board">
-          <div class="col"><div class="colh"><span>Inbox</span><span class="n">2</span></div>
-            <div class="kc"><div class="who">unrouted</div><div class="t">Warm re-engagement</div><div class="m">Construction · Lane A</div></div>
-            <div class="kc"><div class="who">unrouted</div><div class="t">Q3 case-study deck</div><div class="m">Meridian account</div></div>
-          </div>
-          <div class="col"><div class="colh"><span>Assigned</span><span class="n">1</span></div>
-            <div class="kc"><div class="who">kyrie</div><div class="t">Competitor SEO scan</div><div class="m">Brightpath vertical</div></div>
-          </div>
-          <div class="col"><div class="colh"><span>Working</span><span class="n">1</span></div>
-            <div class="kc hot"><div class="who">steph</div><div class="t">Prospect research</div><div class="m">2 warm, drafting</div><span class="fl teal">running</span></div>
-          </div>
-          <div class="col"><div class="colh"><span>Review</span><span class="n">2</span></div>
-            <div class="kc rev"><div class="who">steph</div><div class="t">LinkedIn re-engage</div><div class="m">Coastline · Lane A</div><span class="fl warn">approve to send</span></div>
-            <div class="kc rev"><div class="who">ironman</div><div class="t">Invoice draft</div><div class="m">Meridian retainer</div><span class="fl warn">approve to send</span></div>
-          </div>
-          <div class="col"><div class="colh"><span>Done</span><span class="n">3</span></div>
-            <div class="kc"><div class="who">drose</div><div class="t">Shell mockup</div><div class="m">QA 9/10, queued</div></div>
-            <div class="kc"><div class="who">antman</div><div class="t">LinkedIn post</div><div class="m">Draft in queue</div></div>
-          </div>
+          <div class="col"><div class="colh"><span>Inbox</span><span class="n">0</span></div><div class="cempty mono">—</div></div>
+          <div class="col"><div class="colh"><span>Assigned</span><span class="n">0</span></div><div class="cempty mono">—</div></div>
+          <div class="col"><div class="colh"><span>Working</span><span class="n">0</span></div><div class="cempty mono">—</div></div>
+          <div class="col"><div class="colh"><span>Review</span><span class="n">0</span></div><div class="cempty mono">—</div></div>
+          <div class="col"><div class="colh"><span>Done</span><span class="n">0</span></div><div class="cempty mono">—</div></div>
         </div>
       </div>
 
       <div class="sec"><h2>Fleet <span class="rule"></span></h2>
         <div class="fleet">
           <div class="acard" data-go="console"><div class="r1"><div class="cav">ZA</div><div><div class="cid">zayn</div><div class="crl">orchestrator</div></div><span class="csk crl mono">12 sk</span></div><div class="now"><span class="dot idle"></span>idle · front door open</div></div>
-          <div class="acard working" data-go="console"><div class="r1"><div class="cav">ST</div><div><div class="cid">steph</div><div class="crl">outreach</div></div><div class="hb"><i></i><i></i><i></i><i></i><i></i></div></div><div class="now"><span class="dot working"></span>research-engine · 00:47</div></div>
+          <div class="acard" data-go="console"><div class="r1"><div class="cav">ST</div><div><div class="cid">steph</div><div class="crl">outreach</div></div></div><div class="now"><span class="dot idle"></span>idle</div></div>
           <div class="acard" data-go="console"><div class="r1"><div class="cav">KY</div><div><div class="cid">kyrie</div><div class="crl">paid media + seo</div></div><span class="csk crl mono">14 sk</span></div><div class="now"><span class="dot idle"></span>idle</div></div>
           <div class="acard" data-go="console"><div class="r1"><div class="cav">DR</div><div><div class="cid">drose</div><div class="crl">design</div></div><span class="csk crl mono">14 sk</span></div><div class="now"><span class="dot idle"></span>idle · QA floor 8/10</div></div>
           <div class="acard" data-go="console"><div class="r1"><div class="cav">AN</div><div><div class="cid">antman</div><div class="crl">content</div></div><span class="csk crl mono">14 sk</span></div><div class="now"><span class="dot idle"></span>idle</div></div>
-          <div class="acard needs" data-go="console"><div class="r1"><div class="cav">IR</div><div><div class="cid">ironman</div><div class="crl">crm + automation</div></div><span class="csk crl mono">14 sk</span></div><div class="now"><span class="dot needs"></span>needs you · invoice draft</div></div>
+          <div class="acard" data-go="console"><div class="r1"><div class="cav">IR</div><div><div class="cid">ironman</div><div class="crl">crm + automation</div></div><span class="csk crl mono">14 sk</span></div><div class="now"><span class="dot idle"></span>idle</div></div>
         </div>
       </div>
 
@@ -516,11 +504,7 @@
         <div class="grid2">
           <div>
             <div class="stream">
-              <div class="ev"><span class="t">00:47</span><span class="ag teal mono">steph</span><span class="tx">Spawned sub-agent <b>intel</b> to verify headcount and funding signal.</span></div>
-              <div class="ev"><span class="t">00:31</span><span class="ag teal mono">steph</span><span class="tx">Skill <b>steph-research-engine</b> enriched 2 prospects, 6 sources.</span></div>
-              <div class="ev"><span class="t">00:12</span><span class="ag teal mono">steph</span><span class="tx">Queried the brain for warm construction prospects, 30d+ since touch.</span></div>
-              <div class="ev"><span class="t">08:31</span><span class="ag sys mono">system</span><span class="tx">Heartbeat scan, weekday fast pass. <b>0 sends.</b></span></div>
-              <div class="ev"><span class="t">08:12</span><span class="ag warn mono">ironman</span><span class="tx">Drafted retainer invoice for Meridian. <b>Awaiting approval.</b></span></div>
+              <div class="ev"><span class="tx" style="color:var(--faint)">No recorded activity yet.</span></div>
             </div>
           </div>
           <div>
@@ -528,22 +512,22 @@
               <h3><span class="tile brain" style="width:18px;height:18px;font-size:10px">▦</span> Pipeline</h3>
               <div class="subh">from TwentyCRM · self-hosted</div>
               <div class="pipe">
-                <div class="pl"><span class="plname">New</span><div class="bar"><i style="width:100%"></i></div><span class="pv">14</span></div>
-                <div class="pl"><span class="plname">Contacted</span><div class="bar"><i style="width:64%"></i></div><span class="pv">9</span></div>
-                <div class="pl"><span class="plname">Qualified</span><div class="bar"><i style="width:36%"></i></div><span class="pv">5</span></div>
-                <div class="pl"><span class="plname">Proposal</span><div class="bar"><i style="width:22%"></i></div><span class="pv">3</span></div>
-                <div class="pl"><span class="plname">Won</span><div class="bar"><i style="width:14%"></i></div><span class="pv">2</span></div>
+                <div class="pl"><span class="plname">New</span><div class="bar"><i style="width:0"></i></div><span class="pv">—</span></div>
+                <div class="pl"><span class="plname">Contacted</span><div class="bar"><i style="width:0"></i></div><span class="pv">—</span></div>
+                <div class="pl"><span class="plname">Qualified</span><div class="bar"><i style="width:0"></i></div><span class="pv">—</span></div>
+                <div class="pl"><span class="plname">Proposal</span><div class="bar"><i style="width:0"></i></div><span class="pv">—</span></div>
+                <div class="pl"><span class="plname">Won</span><div class="bar"><i style="width:0"></i></div><span class="pv">—</span></div>
               </div>
-              <div class="pfoot"><span>open <b>31</b></span><span>updated <b>2m ago</b></span></div>
+              <div class="pfoot"><span>open <b>—</b></span><span>from <b>TwentyCRM</b></span></div>
               <button class="openbtn" data-go="crm">Open CRM <span class="mono" style="font-size:11px">→</span></button>
             </div>
             <div class="card" style="margin-top:14px">
               <h3><span class="tile brain" style="width:18px;height:18px;font-size:10px">◷</span> Today's crons</h3>
               <div class="subh">always-on layer · Mini</div>
               <div class="cron">
-                <div class="cronrow"><div><div class="cn">heartbeat</div><div class="cwhen">08:30 weekday · fast scan</div></div><span class="cst ok">ran 08:31</span></div>
-                <div class="cronrow"><div><div class="cn">curator</div><div class="cwhen">daily 02:00 · brain tidy</div></div><span class="cst ok">ran 02:04</span></div>
-                <div class="cronrow"><div><div class="cn">dream</div><div class="cwhen">weekly Mon 09:00 · full cycle</div></div><span class="cst next">next Mon</span></div>
+                <div class="cronrow"><div><div class="cn">heartbeat</div><div class="cwhen">08:30 weekday · fast scan</div></div><span class="cst stg">staged</span></div>
+                <div class="cronrow"><div><div class="cn">curator</div><div class="cwhen">daily 02:00 · brain tidy</div></div><span class="cst stg">staged</span></div>
+                <div class="cronrow"><div><div class="cn">dream</div><div class="cwhen">weekly Mon 09:00 · full cycle</div></div><span class="cst stg">staged</span></div>
               </div>
             </div>
           </div>
@@ -554,11 +538,11 @@
     <!-- ============ CONSOLE (centerpiece) ============ -->
     <section class="view" id="v-console">
       <div class="console">
-        <div class="vhead"><h1>steph</h1><span class="who">outreach · assign a task, then watch it work</span></div>
+        <div class="vhead"><h1>steph</h1><span class="who">assign a task, then watch it work</span></div>
 
         <div class="assign">
           <div class="albl"><span class="tile skill" style="width:16px;height:16px;font-size:9px">▸</span> Assign</div>
-          <textarea rows="2" placeholder="Assign a task to steph, or let zayn route it. Enter to fire.">Surface 2 warm construction-sector prospects, research each, draft a LinkedIn re-engagement for the best fit. Queue for approval, do not send.</textarea>
+          <textarea rows="2" placeholder="Assign a task to steph, or let zayn route it. Enter to fire."></textarea>
           <div class="arow2">
             <span class="chip"><span class="cav">ST</span> steph</span>
             <span class="chip route">↳ or route via zayn</span>
@@ -568,146 +552,28 @@
 
         <div class="cwrap">
           <div>
-            <!-- run header -->
+            <!-- run header — static default is empty; the JS fills real run data -->
             <div class="runhead">
               <div class="rav">ST</div>
               <div>
-                <div class="rid mono">run <b>#a2f-19</b> · steph · research-engine</div>
-                <div class="rmeta">model claude · started 09:41:12 · 5 tool calls · 0 sends</div>
+                <div class="rid mono">run <b>—</b></div>
+                <div class="rmeta">no run yet</div>
               </div>
-              <span class="stbadge"><span class="dot working"></span> working</span>
-              <span class="elapsed mono" id="elapsed">00:47</span>
+              <span class="stbadge"><span class="dot idle"></span> idle</span>
+              <span class="elapsed mono" id="elapsed"></span>
               <button class="stopbtn">Stop</button>
             </div>
 
-            <!-- transcript -->
+            <!-- transcript — real events render here -->
             <div class="transcript">
-
-              <div class="node">
-                <div class="turn user"><div class="tav">you</div><div class="tbody"><div class="trole">task</div>Surface 2 warm construction-sector prospects, research each, draft a LinkedIn re-engagement for the best fit. Queue for approval, do not send.</div></div>
-              </div>
-
-              <div class="node">
-                <div class="turn agent"><div class="tav">ZA</div><div class="tbody"><div class="trole">zayn · routed</div><span class="say">Routed to <b style="color:var(--ink)">steph</b>, outreach role. Read-brain-first, draft-only, approval gate on any send.</span></div></div>
-              </div>
-
-              <div class="node">
-                <div class="think mono">Reading the brain for prospect status and voice-of-customer before I draft anything.</div>
-              </div>
-
-              <!-- brain query -->
-              <div class="node tool">
-                <div class="tc">
-                  <div class="tch"><span class="tile brain">❖</span><span class="tctype">brain query</span><span class="tcname">gBrain</span><span class="tctime mono ok">3 hits · 210ms</span></div>
-                  <div class="tcb">
-                    <div class="qline mono"><span class="qk">search</span> "<span class="qv">construction developer · warm · last_touch &gt; 30d</span>"</div>
-                    <div class="qres">
-                      <div class="qr"><div class="qt">Prospect note · Coastline Developers <span class="path">brain/people/coastline.md</span></div><div class="rel"><i style="width:92%"></i></div><div class="qs mono">0.92</div></div>
-                      <div class="qr"><div class="qt">Prospect note · Brightpath Infra <span class="path">brain/people/brightpath.md</span></div><div class="rel"><i style="width:78%"></i></div><div class="qs mono">0.78</div></div>
-                      <div class="qr"><div class="qt">Voice-of-customer · construction ICP <span class="path">brain/voc/construction.md</span></div><div class="rel"><i style="width:71%"></i></div><div class="qs mono">0.71</div></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- skill -->
-              <div class="node tool">
-                <div class="tc">
-                  <div class="tch"><span class="tile skill">▸</span><span class="tctype">skill</span><span class="tcname">steph-research-engine</span><span class="tctime mono ok">done · 4.2s</span></div>
-                  <div class="tcb">
-                    <div class="kv">
-                      <span class="k">prospects <b>2</b></span><span class="k">depth <b>standard</b></span><span class="k">channel <b>linkedin-first</b></span>
-                    </div>
-                    <div class="outsum">Enriched both prospects, <b>role</b>, <b>recent trigger</b>, and <b>mutual context</b>. Pulled verbatim vocabulary from the voice-of-customer note, no paraphrase into marketing speak.</div>
-                    <div class="badgerow"><span class="bdg">sources · 6</span><span class="bdg">verbatim terms · 8</span><span class="bdg teal">ICP verified</span></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- sub-agent -->
-              <div class="node tool">
-                <div class="tc">
-                  <div class="tch"><span class="tile sub">◇</span><span class="tctype">sub-agent</span><span class="tcname">intel</span><span class="tctime mono ok">returned · 2.8s</span></div>
-                  <div class="tcb">
-                    <div class="outsum" style="margin-bottom:2px">Task: verify company headcount and any recent funding signal for the top-ranked fit.</div>
-                    <div class="nested">
-                      <div class="nstep mono"><span class="ok">✓</span> <span class="st">web search</span> · company + headcount</div>
-                      <div class="nstep mono"><span class="ok">✓</span> <span class="st">web fetch</span> · about page, team page</div>
-                      <div class="nres">Headcount <b>40 to 60</b>, no funding event on record, ICP-fit <b>8/10</b>. Recent trigger: new project win posted 6 days ago.</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="node">
-                <div class="think mono">Coastline is the stronger fit. Drafting a LinkedIn re-engagement in ZippyScale voice. No send.</div>
-              </div>
-
-              <!-- file write / diff -->
-              <div class="node tool">
-                <div class="tc">
-                  <div class="tch"><span class="tile file">▤</span><span class="tctype">write</span><span class="tcname">run-logs/queue/2026-07-19-steph.md</span><span class="tctime mono ok">+18 lines</span></div>
-                  <div class="tcb">
-                    <div class="difff">
-                      <div class="dh"><span>draft · linkedin re-engagement</span><span>lane A</span></div>
-                      <div class="dl add">Saw the new project win, congrats to the Coastline team.</div>
-                      <div class="dl add">Last we spoke, attribution on inbound was the gap.</div>
-                      <div class="dl add">We built a tracking setup for a similar developer that</div>
-                      <div class="dl add">tied every enquiry back to source. Worth a look?</div>
-                      <div class="dl ctx">The ZippyScale Team</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- result -->
-              <div class="node result">
-                <div class="tc res">
-                  <div class="tch"><span class="tile result">✓</span><span class="tctype">result</span><span class="tcname">3 drafts queued</span><span class="tctime mono">complete</span></div>
-                  <div class="tcb">
-                    <div class="reslist">
-                      <div class="rl2"><span class="rn">A</span><b>Coastline Developers</b> · LinkedIn re-engagement, ready for review</div>
-                      <div class="rl2"><span class="rn">B</span><b>Brightpath Infra</b> · LinkedIn opener, held for a second trigger</div>
-                      <div class="rl2"><span class="rn">C</span><b>Coastline Developers</b> · email variant, backup channel</div>
-                    </div>
-                    <div class="rstat mono"><b>3 queued</b> · <span class="sent">0 sent</span> · nothing leaves without your approval</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- review / approve -->
-              <div class="node review">
-                <div class="tc rev">
-                  <div class="tch"><span class="tile review">⏸</span><span class="tctype">review · outbound</span><span class="tcname">draft A · Coastline</span><span class="tctime mono">needs you</span></div>
-                  <div class="tcb">
-                    <div class="draftbox">
-                      <div class="dto mono">to · Coastline Developers · linkedin dm</div>
-                      Saw the new project win, congrats to the Coastline team. Last we spoke, attribution on inbound was the gap. We built a tracking setup for a similar developer that tied every enquiry back to source. Worth a quick look this week?
-                    </div>
-                    <div class="gate mono"><span>⚠</span> Approve authorizes the send. Nothing sends until you click.</div>
-                    <div class="actions">
-                      <button class="approve">Approve &amp; send</button>
-                      <button class="ghost">Edit draft</button>
-                      <button class="skip mono">Skip for now</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="node live">
-                <div class="turn agent"><div class="tav">ST</div><div class="tbody"><div class="trole">steph · live</div><span class="say">Standing by. Approve draft A to send, or assign the next task above.</span></div></div>
-              </div>
-
+              <div class="node"><div class="think mono">Assign a task above to begin.</div></div>
             </div>
           </div>
 
           <!-- run history -->
           <aside class="rhist">
             <h3><span>Run history</span><span>steph</span></h3>
-            <div class="hr live on"><span class="hi"></span><div><div class="hid mono">#a2f-19</div><div class="hd">Surface 2 warm prospects, draft re-engagement</div><div class="ht mono">now · working</div></div></div>
-            <div class="hr done"><span class="hi"></span><div><div class="hid mono">#a2e-08</div><div class="hd">Weekly outbound cycle, fast pass</div><div class="ht mono">08:31 · 2 drafted, 0 sent</div></div></div>
-            <div class="hr done"><span class="hi"></span><div><div class="hid mono">#a2c-44</div><div class="hd">Enrich Brightpath account note</div><div class="ht mono">yesterday · done</div></div></div>
-            <div class="hr queued"><span class="hi"></span><div><div class="hid mono">#a2b-17</div><div class="hd">Discovery follow-up sequence draft</div><div class="ht mono">held · needs input</div></div></div>
+            <div class="hr"><div><div class="hd" style="color:var(--faint)">No runs yet.</div></div></div>
           </aside>
         </div>
       </div>
@@ -727,32 +593,28 @@
           <div class="tside">
             <div class="tlogo"><span class="mark" style="width:20px;height:20px;font-size:11px">T</span> Twenty</div>
             <div class="tnav">
-              <div class="tn on"><span class="tni">◇</span> Opportunities <span class="tnc mono">31</span></div>
-              <div class="tn"><span class="tni">◈</span> Companies <span class="tnc mono">24</span></div>
-              <div class="tn"><span class="tni">◦</span> People <span class="tnc mono">58</span></div>
-              <div class="tn"><span class="tni">▤</span> Notes <span class="tnc mono">12</span></div>
-              <div class="tn"><span class="tni">◷</span> Tasks <span class="tnc mono">7</span></div>
+              <div class="tn on"><span class="tni">◇</span> Opportunities <span class="tnc mono">—</span></div>
+              <div class="tn"><span class="tni">◈</span> Companies <span class="tnc mono">—</span></div>
+              <div class="tn"><span class="tni">◦</span> People <span class="tnc mono">—</span></div>
+              <div class="tn"><span class="tni">▤</span> Notes <span class="tnc mono">—</span></div>
+              <div class="tn"><span class="tni">◷</span> Tasks <span class="tnc mono">—</span></div>
             </div>
           </div>
           <div class="tmain">
             <div class="tmh">
-              <h3>Opportunities</h3><span class="tcount mono">31 records · all | live</span>
+              <h3>Opportunities</h3><span class="tcount mono">— records · layout only</span>
               <div class="tbtns"><span class="tbn mono">filter</span><span class="tbn mono pri">+ new</span></div>
             </div>
             <div class="tkan">
-              <div class="tkc"><div class="tkh mono"><span>New</span><span>14</span></div>
-                <div class="trec"><div class="trn">Acme Builders</div><div class="trm mono">inbound · lane A</div></div>
-                <div class="trec"><div class="trn">Meridian Group</div><div class="trm mono">referral</div></div>
+              <div class="tkc"><div class="tkh mono"><span>New</span><span>—</span></div>
+                <div class="trec"><div class="trn">Acme Builders</div><div class="trm mono">placeholder</div></div>
               </div>
-              <div class="tkc"><div class="tkh mono"><span>Contacted</span><span>9</span></div>
-                <div class="trec"><div class="trn">Coastline Dev</div><div class="trm mono">linkedin · warm</div></div>
-                <div class="trec"><div class="trn">Brightpath Infra</div><div class="trm mono">linkedin</div></div>
+              <div class="tkc"><div class="tkh mono"><span>Contacted</span><span>—</span></div>
+                <div class="trec"><div class="trn">Meridian Group</div><div class="trm mono">placeholder</div></div>
               </div>
-              <div class="tkc"><div class="tkh mono"><span>Qualified</span><span>5</span></div>
-                <div class="trec"><div class="trn">Meridian Group</div><div class="trm mono">call booked</div></div>
+              <div class="tkc"><div class="tkh mono"><span>Qualified</span><span>—</span></div>
               </div>
-              <div class="tkc"><div class="tkh mono"><span>Proposal</span><span>3</span></div>
-                <div class="trec"><div class="trn">Acme Builders</div><div class="trm mono">deck sent</div></div>
+              <div class="tkc"><div class="tkh mono"><span>Proposal</span><span>—</span></div>
               </div>
             </div>
           </div>
@@ -767,28 +629,14 @@
       <p class="lead">The context every agent reads at boot: client status, offer, voice-of-customer, past decisions. Search first, read the page, cite or skip. The brain is queried, never guessed.</p>
       <div class="bsearch">
         <span class="si">❖</span>
-        <input placeholder="Search the brain. Try: voice of customer, construction" value="voice of customer construction">
+        <input placeholder="Search the brain. Try: voice of customer, construction">
         <span class="sk mono">↵</span>
       </div>
       <div class="bfilters">
         <span class="bf on mono">all</span><span class="bf mono">people</span><span class="bf mono">voc</span><span class="bf mono">decisions</span><span class="bf mono">offers</span><span class="bf mono">run-logs</span>
       </div>
       <div class="bres">
-        <div class="br">
-          <div class="brh"><span class="brt">Voice-of-customer · construction ICP</span><span class="brp mono">brain/voc/construction.md · 0.91</span></div>
-          <div class="brx">Prospects describe the gap as <mark>attribution on inbound</mark>, not "marketing". Verbatim: "we get calls but no idea which ad", "spend without a source". Use their words, do not paraphrase.</div>
-          <div class="brf"><span class="link mono">construction.md</span><span class="link mono">coastline.md</span><span class="link mono">offer-attribution.md</span></div>
-        </div>
-        <div class="br">
-          <div class="brh"><span class="brt">Prospect note · Coastline Developers</span><span class="brp mono">brain/people/coastline.md · 0.88</span></div>
-          <div class="brx">Warm, last touch 34 days. Interested in <mark>enquiry-to-source tracking</mark>. New project win posted this week, a natural re-engagement trigger.</div>
-          <div class="brf"><span class="link mono">construction.md</span><span class="link mono">run-logs/steph</span></div>
-        </div>
-        <div class="br">
-          <div class="brh"><span class="brt">Decision · outbound is LinkedIn-first</span><span class="brp mono">brain/decisions/channel.md · 0.74</span></div>
-          <div class="brx">LinkedIn DM reply rate beats cold email for this ICP, so <mark>lead with LinkedIn</mark>, email is the backup channel. Two channels only, both draft-only.</div>
-          <div class="brf"><span class="link mono">channel.md</span><span class="link mono">invariants</span></div>
-        </div>
+        <div class="br"><div class="brx" style="color:var(--faint)">Type a query and press Enter to search the brain.</div></div>
       </div>
     </section>
 
@@ -800,12 +648,12 @@
         <div class="schcard">
           <div class="stile">◷</div>
           <div><div class="snm">heartbeat</div><div class="sd mono">weekday 08:30 · fast scan · surfaces and drafts</div></div>
-          <div class="stimes"><div>last <span style="color:var(--ok)">ran 08:31</span></div><div class="nx">next tomorrow 08:30</div></div>
+          <div class="stimes"><div>last <span style="color:var(--faint)">—</span></div><div class="nx">staged</div></div>
         </div>
         <div class="schcard">
           <div class="stile">❖</div>
           <div><div class="snm">curator</div><div class="sd mono">daily 02:00 · brain tidy · dedup and link</div></div>
-          <div class="stimes"><div>last <span style="color:var(--ok)">ran 02:04</span></div><div class="nx">next tonight 02:00</div></div>
+          <div class="stimes"><div>last <span style="color:var(--faint)">—</span></div><div class="nx">staged</div></div>
         </div>
         <div class="schcard">
           <div class="stile">◇</div>
@@ -922,6 +770,13 @@
     const flc=document.querySelector('nav .grp .gc'); if(flc)flc.textContent=liveN+' live';
     const hbf=document.querySelector('.railfoot'); if(hbf)hbf.innerHTML='<span class="dot '+(s.heartbeat==='live'?'working':'idle')+'"></span><span>heartbeat · '+esc(s.heartbeat||'staged')+'</span>';
     renderSchedules(s.schedules);
+
+    // console tab: operating happens on the live panel — honest default until an agent row is clicked
+    // (the pipeline card + CRM frame ship neutral "—" statics; nothing fabricated to clear there)
+    const con0=document.querySelector('#v-console .console');
+    if(con0)con0.innerHTML='<div class="vhead"><h1>console</h1><span class="who">read-only mirror</span></div>'+
+      '<p class="lead">Operating happens on the live panel, where the agents actually run. Pick an agent in the rail or the fleet to see its recent activity and queued drafts here.</p>'+
+      '<div class="arow2" style="margin-top:12px">'+(OP?'<a class="runbtn" href="'+esc(OP)+'" target="_blank" rel="noopener">▶ Open the live panel</a>':'<span class="chip route">live panel · sandys-mac-mini.local:8787</span>')+'</div>';
 
     // brain tab: read-only mirror can't reach the private brain — one honest note, no fabricated hits
     const binp=q('#v-brain .bsearch input'); if(binp){binp.value='';binp.setAttribute('disabled','');binp.placeholder='Brain search runs on the live panel';}
