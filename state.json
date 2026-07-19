@@ -1,14 +1,14 @@
 {
-  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-19 19:36","tier":"foundation",
-  "heartbeat":"staged","infra":{"brain":true,"whatsapp":true,"automation":true},
+  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-19 19:59","tier":"foundation",
+  "heartbeat":"live","infra":{"brain":true,"whatsapp":true,"automation":true},
   "spine":["system.md","invariants.md","agency.yaml","brain/connect.md"],
-  "stats":{"os":6,"agents":6,"skills":88,"gates":32,"queue":1,"integrations":"3/3"},
+  "stats":{"os":6,"agents":6,"skills":88,"gates":48,"queue":5,"integrations":"3/3"},
   "os":[
     {"id":"founder-os","label":"Founder OS","agent":"zayn","role":"Orchestrator","hb":"ready",
-     "counts":[["agents",6],["skills",88],["gates",32],["queued",1]],
+     "counts":[["agents",6],["skills",88],["gates",48],["queued",5]],
      "desc":"The shell. Dispatches the fleet, holds the missions board, the digest, the activity stream."},
     {"id":"outreach-os","label":"Outreach OS","agent":"steph","role":"Outreach","hb":"ready",
-     "counts":[["skills",20],["queued",1],["pilots","0/3"]],
+     "counts":[["skills",20],["queued",5],["pilots","0/3"]],
      "desc":"Surface, research, draft, queue. Every send stops for approval. Offer is DRAFT: drafts only."},
     {"id":"growth-os","label":"Growth OS","agent":"kyrie","role":"Paid media + SEO","hb":"ready",
      "counts":[["skills",14],["campaigns",0],["live spend","0"]],
@@ -26,9 +26,9 @@
   "system":[
     {"id":"brain-os","label":"Brain OS","counts":[["pages",1523],["embedded","100%"],["engine","postgres"]],
      "desc":"The second brain: gBrain (local free embeddings) + Obsidian vault. The context every agent reads."},
-    {"id":"kernel","label":"Kernel","counts":[["invariants",32],["categories",7],["spine",4]],
+    {"id":"kernel","label":"Kernel","counts":[["invariants",48],["categories",7],["spine",4]],
      "desc":"The spine: CLAUDE.md, SYSTEM.md, INVARIANTS.md, agency.yaml. Judgment encoded as blocking gates."},
-    {"id":"schedules","label":"Schedules","counts":[["heartbeat","staged"],["daily","08:30"],["weekly","Mon 09:00"]],
+    {"id":"schedules","label":"Schedules","counts":[["heartbeat","live"],["daily","08:30"],["weekly","Mon 09:00"]],
      "desc":"The always-on layer. External scheduler wakes headless runs; drafts queue; nothing sends."}
   ],
   "agents":[
@@ -41,11 +41,22 @@
   ],
   "missions":{
     "columns":["Surfaced","Researched","Drafted","Review","Queued","Booked"],
-    "cards":[{"col":"Queued","os":"outreach-os","agent":"steph","label":"Warm re-engagement","meta":"Construction developer · Lane A","flag":"awaiting approval"}]
+    "cards":[
+      {"col":"Queued","os":"outreach-os","agent":"steph","label":"Warm re-engagement","meta":"developer · Lane A","flag":"awaiting approval"},
+      {"col":"Queued","os":"outreach-os","agent":"steph","label":"Cold capture","meta":"design-build · Lane A · earned evidence","flag":"awaiting approval"},
+      {"col":"Queued","os":"growth-os","agent":"kyrie","label":"Launch campaign spec","meta":"held: economics gate + no pay link"},
+      {"col":"Queued","os":"content-os","agent":"antman","label":"Build-in-public launch content","meta":"reel + carousel + caption"},
+      {"col":"Queued","os":"ops-os","agent":"ironman","label":"Client balance reminder","meta":"brain-verified, drafted for send"}
+    ]
   },
   "activity":[
-    {"when":"2026-07-19 19:36","agent":"steph","event":"Outbound cycle: surfaced 2, drafted 1, skipped 1 (no earned wedge). 1 draft queued. Nothing sent."},
-    {"when":"2026-07-19 19:36","agent":"system","event":"Heartbeat staged. Brain, WhatsApp, automation: 3/3 up."}
+    {"when":"2026-07-19 19:59","agent":"zayn","event":"Orchestrated: 5 grounded assignments dispatched, 1 decision escalated to Sandy. Refused to fabricate a cold cohort."},
+    {"when":"2026-07-19 19:59","agent":"steph","event":"Re-verified a firm from scratch, built earned evidence on its funnel, 2 drafts queued. Skipped unbacked pipeline rows. Nothing sent."},
+    {"when":"2026-07-19 19:59","agent":"kyrie","event":"Launch campaign spec drafted and HELD: no expected CPL + no live pay link, so enable stays gated. No spend."},
+    {"when":"2026-07-19 19:59","agent":"antman","event":"Build-in-public launch reel + carousel + caption drafted. Every rupee figure cut for lack of shareable proof."},
+    {"when":"2026-07-19 19:59","agent":"drose","event":"QA'd the live dashboard 8.5/10. Caught a gate-count error (32 vs 48); fixed. Palette clean, zero teal."},
+    {"when":"2026-07-19 19:59","agent":"ironman","event":"Client balance reminder drafted, amount + date verified against two brain pages. Queued for approval, not sent."},
+    {"when":"2026-07-19 19:59","agent":"system","event":"Heartbeat live. Dreaming consolidated the brain (645 extracted, 729 embedded). Integrations 3/3 up."}
   ],
   "gates":[
     {"cat":"Outbound & approval","n":3,"sample":"Never send without explicit approval"},
