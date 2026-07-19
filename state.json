@@ -1,14 +1,14 @@
 {
-  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-19 23:20","as_of":"2026-07-19 23:20 refresh","tier":"foundation",
+  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-20 00:12","as_of":"2026-07-20 00:12 refresh","tier":"foundation",
   "heartbeat":"live","infra":{"brain":true,"whatsapp":true,"automation":true},
   "spine":["system.md","invariants.md","agency.yaml","brain/connect.md"],
-  "stats":{"os":6,"agents":6,"skills":88,"gates":48,"queue":7,"integrations":"3/3"},
+  "stats":{"os":6,"agents":6,"skills":89,"gates":48,"queue":5,"integrations":"3/3"},
   "os":[
     {"id":"founder-os","label":"Founder OS","agent":"zayn","role":"Orchestrator","hb":"ready",
-     "counts":[["agents",6],["skills",88],["gates",48],["queued",7]],
+     "counts":[["agents",6],["skills",89],["gates",48],["queued",5]],
      "desc":"The shell. Dispatches the fleet, holds the missions board, the digest, the activity stream."},
     {"id":"outreach-os","label":"Outreach OS","agent":"steph","role":"Outreach","hb":"ready",
-     "counts":[["skills",20],["queued",7],["pilots","0/3"]],
+     "counts":[["skills",21],["queued",5],["pilots","0/3"]],
      "desc":"Surface, research, draft, queue. Every send stops for approval. Offer is DRAFT: drafts only."},
     {"id":"growth-os","label":"Growth OS","agent":"kyrie","role":"Paid media + SEO","hb":"ready",
      "counts":[["skills",14],["campaigns",0],["live spend","0"]],
@@ -33,7 +33,7 @@
   ],
   "agents":[
     {"id":"zayn","os":"founder-os","role":"Orchestrator","skills":12,"hb":"ready","now":"idle"},
-    {"id":"steph","os":"outreach-os","role":"Outreach","skills":20,"hb":"ready","now":"1 draft queued"},
+    {"id":"steph","os":"outreach-os","role":"Outreach","skills":21,"hb":"ready","now":"1 draft queued"},
     {"id":"kyrie","os":"growth-os","role":"Paid media + SEO","skills":14,"hb":"ready","now":"idle"},
     {"id":"drose","os":"design-os","role":"Design","skills":14,"hb":"ready","now":"idle"},
     {"id":"antman","os":"content-os","role":"Content","skills":14,"hb":"ready","now":"idle"},
@@ -49,15 +49,7 @@
       {"col":"Queued","os":"ops-os","agent":"ironman","label":"Client balance reminder","meta":"brain-verified, drafted for send"}
     ]
   },
-  "activity":[
-    {"when":"2026-07-19","agent":"zayn","event":"Orchestrated: 5 grounded assignments dispatched, 1 decision escalated to Sandy. Refused to fabricate a cold cohort."},
-    {"when":"2026-07-19","agent":"steph","event":"Re-verified a firm from scratch, built earned evidence on its funnel, 2 drafts queued. Skipped unbacked pipeline rows. Nothing sent."},
-    {"when":"2026-07-19","agent":"kyrie","event":"Launch campaign spec drafted and HELD: no expected CPL + no live pay link, so enable stays gated. No spend."},
-    {"when":"2026-07-19","agent":"antman","event":"Build-in-public launch reel + carousel + caption drafted. Every rupee figure cut for lack of shareable proof."},
-    {"when":"2026-07-19","agent":"drose","event":"QA'd the live dashboard 8.5/10. Caught a gate-count error (32 vs 48); fixed. Palette clean, zero teal."},
-    {"when":"2026-07-19","agent":"ironman","event":"Client balance reminder drafted, amount + date verified against two brain pages. Queued for approval, not sent."},
-    {"when":"2026-07-19","agent":"system","event":"Heartbeat live. Dreaming consolidated the brain (645 extracted, 729 embedded). Integrations 3/3 up."}
-  ],
+  "activity":[{"when": "2026-07-19", "agent": "zayn", "event": "recorded a run \u2014 30 log entries"}, {"when": "2026-07-19", "agent": "steph", "event": "recorded a run \u2014 47 log entries"}, {"when": "2026-07-19", "agent": "kyrie", "event": "recorded a run \u2014 33 log entries"}, {"when": "2026-07-19", "agent": "ironman", "event": "recorded a run \u2014 32 log entries"}, {"when": "2026-07-19", "agent": "drose", "event": "recorded a run \u2014 48 log entries"}, {"when": "2026-07-19", "agent": "curator", "event": "recorded a run \u2014 4 log entries"}, {"when": "2026-07-19", "agent": "antman", "event": "recorded a run \u2014 31 log entries"}],
   "gates":[
     {"cat":"Outbound & approval","n":3,"sample":"Never send without explicit approval"},
     {"cat":"Truth & fabrication","n":8,"sample":"Never invent case studies or numbers"},
