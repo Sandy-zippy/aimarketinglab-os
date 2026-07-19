@@ -398,6 +398,18 @@
     .runhead{flex-wrap:wrap}
   }
   @media(max-width:520px){ .fleet{grid-template-columns:1fr} .tkan{grid-template-columns:1fr} }
+
+  /* run-replay scrubber (steal from Manus: roll the timeline back) */
+  .replaybar{display:flex;align-items:center;gap:11px;margin:14px 0 2px;padding:8px 13px;background:var(--panel);border:1px solid var(--line2);border-radius:10px;font-family:'JetBrains Mono';font-size:11px}
+  .replaybar button{border:1px solid var(--line2);background:var(--panel2);color:var(--dim);border-radius:7px;padding:4px 10px;font-size:11px;font-family:'JetBrains Mono';white-space:nowrap}
+  .replaybar button:hover{color:var(--ink);border-color:var(--teal)}
+  .replaybar input[type=range]{flex:1;accent-color:var(--teal);height:4px}
+  .replaybar .rt{color:var(--faint);min-width:120px;text-align:right}
+  .replaybar .rbadge{color:var(--warn);font-weight:700}
+  /* trace-tree: sub-agent nodes indent under their caller (Langfuse-style depth) */
+  .node.depth1{margin-left:20px}
+  .node.depth1::before{left:-19px;border-color:var(--dim)}
+  .node.depth1 .tc{border-left:2px solid var(--line2)}
 </style>
 </head>
 <body>
@@ -839,6 +851,7 @@
   const api=(p,b)=>fetch(p,{method:b?'POST':'GET',headers:H,body:b?JSON.stringify(b):null}).then(r=>r.ok?r.json():Promise.reject(r.status));
   const esc=s=>(s==null?'':(''+s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
   let current='steph';
+  let replayIdx=null, replayTimer=null, curEvents=[], curJobId=null;   // run-replay state
   // backend reachable (Mini panel) → full live+operable; else read the committed state.json → live read-only public view
   api('/api/state').then(s=>init(s)).catch(()=>{ fetch('state.json',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(renderPublic).catch(()=>{}); });
   function renderPublic(s){
@@ -911,6 +924,26 @@
       '<span class="c"><b>'+esc(stx.integrations||'')+'</b> integrations</span>';
     const flc=document.querySelector('nav .grp .gc'); if(flc)flc.textContent=liveN+' live';
     const hbf=document.querySelector('.railfoot'); if(hbf)hbf.innerHTML='<span class="dot '+(s.heartbeat==='live'?'working':'idle')+'"></span><span>heartbeat · '+esc(s.heartbeat||'staged')+'</span>';
+    renderSchedules(s.schedules);
+  }
+  // scheduled runs as first-class objects: loaded? last run? failing? (audit UI #3)
+  function renderSchedules(sched){
+    if(!sched||!sched.length)return;
+    const fmt=s=>({
+      badge:s.loaded?'<span class="cst ok">loaded</span>':'<span class="cst stg">not loaded</span>',
+      fail:(s.failures>0)?'<span class="cst" style="color:var(--del);border-color:color-mix(in oklch,var(--del) 40%,var(--line2))">'+s.failures+' failed</span>':'',
+      last:s.last?('last run '+s.last):'not yet run'
+    });
+    const schi=document.querySelector('#v-schedules .schi');
+    if(schi)schi.innerHTML=sched.map(s=>{const f=fmt(s);
+      return '<div class="schcard"><div class="stile">◷</div><div><div class="snm" style="text-transform:capitalize">'+esc(s.name)+'</div><div class="sd mono">'+esc(s.when)+'</div></div>'+
+        '<div class="stimes"><div>'+f.badge+' '+f.fail+'</div><div class="nx">'+esc(f.last)+'</div></div></div>';
+    }).join('');
+    const cron=document.querySelector('#v-home .cron');
+    if(cron)cron.innerHTML=sched.map(s=>{const f=fmt(s);
+      return '<div class="cronrow"><div><div class="cn" style="text-transform:capitalize">'+esc(s.name)+'</div><div class="cwhen">'+esc(s.when)+'</div></div>'+
+        (s.failures>0?'<span class="cst" style="color:var(--del);border-color:color-mix(in oklch,var(--del) 40%,var(--line2))">'+s.failures+' failed</span>':(s.loaded?'<span class="cst ok">'+esc(f.last)+'</span>':'<span class="cst stg">staged</span>'))+'</div>';
+    }).join('');
   }
   function init(){
     document.body.setAttribute('data-live','1');
@@ -930,6 +963,7 @@
   }
   function q(s){return document.querySelector(s);}
   function openConsole(){
+    replayIdx=null; stopReplay(); curJobId=null;   // fresh agent → live, not mid-replay
     const h=q('#v-console h1'); if(h)h.textContent=current;
     const ta=q('#v-console textarea'); if(ta){ta.value='';ta.placeholder='Assign a task to '+current+', or let zayn route it. Enter to fire.';}
     const tr=q('#v-console .transcript'); if(tr)tr.innerHTML='<div class="node"><div class="think mono">Ready. Assign a task above to '+esc(current)+'.</div></div>';
@@ -942,7 +976,7 @@
     const tr=q('#v-console .transcript'); if(tr)tr.innerHTML='<div class="node"><div class="think mono">Dispatching to '+esc(current)+'…</div></div>';
     api('/api/run',{agent:current,task:task||undefined}).then(()=>{if(ta)ta.value='';setTimeout(poll,600);}).catch(e=>{if(tr)tr.innerHTML='<div class="node"><div class="think mono">Run blocked ('+esc(e)+'). If 403, add ?token=… ; if the run 401s, claude needs login on this box.</div></div>';});
   }
-  function poll(){api('/api/state').then(s=>{renderRail(s);if(v('v-console'))renderConsole(s);if(v('v-home'))renderHome(s);}).catch(()=>{});}
+  function poll(){api('/api/state').then(s=>{renderRail(s);renderSchedules(s.schedules);if(v('v-console'))renderConsole(s);if(v('v-home'))renderHome(s);}).catch(()=>{});}
   function v(id){return document.getElementById(id).classList.contains('on');}
   function renderHome(s){
     const cols=document.querySelectorAll('#v-home .board .col'), q=s.queue||[], run=(s.jobs||[]).filter(j=>j.status==='running');
@@ -977,29 +1011,66 @@
     const rid=q('#v-console .rid'); if(rid)rid.innerHTML='run <b>#'+esc((j.id+'').slice(-6))+'</b> · '+esc(current);
     const rm=q('#v-console .rmeta'); if(rm)rm.textContent='model claude · '+(j.tools||0)+' tool calls · '+j.status+(j.cost?(' · $'+j.cost):'');
     const bd=q('#v-console .stbadge'); if(bd)bd.innerHTML='<span class="dot '+(j.status==='running'?'working':'idle')+'"></span> '+esc(j.status);
-    tr.innerHTML=renderEvents(j.events||[]);
+    if(j.id!==curJobId){curJobId=j.id;replayIdx=null;stopReplay();}   // new run → exit replay
+    curEvents=j.events||[];
+    buildReplayBar();
+    if(replayIdx!=null) return;                                        // replaying → the scrubber drives the transcript, not the poll
+    tr.innerHTML=renderEvents(curEvents);
     const main=document.getElementById('main'); if(main&&j.status==='running')main.scrollTop=main.scrollHeight;
   }
-  function toolCard(ev,result){
+  // ----- run replay (Manus-style: roll the timeline back, watch each tool fire) -----
+  function buildReplayBar(){
+    const host=q('#v-console .transcript'); if(!host)return;
+    let bar=q('#v-console .replaybar');
+    if(!bar){bar=document.createElement('div');bar.className='replaybar';host.parentNode.insertBefore(bar,host);}
+    const n=curEvents.length, idx=(replayIdx==null?n:replayIdx);
+    const at=curEvents[Math.max(0,idx-1)], el=(at&&at.ts!=null)?at.ts.toFixed(1)+'s':'0s';
+    bar.innerHTML='<button id="rp-play">'+(replayTimer?'⏸ pause':'▶ replay')+'</button>'+
+      '<input id="rp-range" type="range" min="0" max="'+n+'" value="'+idx+'">'+
+      '<span class="rt">'+(replayIdx==null?'<span style="color:var(--teal-dim)">live · '+n+' events</span>':('<span class="rbadge">replay</span> '+idx+'/'+n+' · '+el))+'</span>'+
+      (replayIdx!=null?'<button id="rp-live">↦ live</button>':'');
+    q('#rp-play').onclick=toggleReplay;
+    q('#rp-range').oninput=e=>{stopReplay();const v=+e.target.value;replayIdx=(v>=n)?null:v;paintReplay();};
+    const lv=q('#rp-live'); if(lv)lv.onclick=()=>{stopReplay();replayIdx=null;paintReplay();};
+  }
+  function paintReplay(){
+    const tr=q('#v-console .transcript'); if(!tr)return;
+    tr.innerHTML=renderEvents((replayIdx==null)?curEvents:curEvents.slice(0,replayIdx));
+    buildReplayBar();
+  }
+  function toggleReplay(){
+    if(replayTimer){stopReplay();buildReplayBar();return;}
+    if(replayIdx==null)replayIdx=0;
+    replayTimer=setInterval(()=>{replayIdx++;if(replayIdx>=curEvents.length){replayIdx=null;stopReplay();}paintReplay();},700);
+    paintReplay();
+  }
+  function stopReplay(){if(replayTimer){clearInterval(replayTimer);replayTimer=null;}}
+  function toolCard(ev,resultEv){
     const name=ev.name||'tool', inp=ev.input||{}, cmd=inp.command||'';
+    const result=resultEv?resultEv.text:null;
+    const dur=(resultEv&&resultEv.ts!=null&&ev.ts!=null)?(resultEv.ts-ev.ts):null;
     let tile='skill',type='tool',label=name,body='';
     if(name==='Bash'&&/brain\/gb|gb (get|search|query)/.test(cmd)){tile='brain';type='brain query';label='gBrain';body='<div class="qline mono">'+esc(cmd.replace(/^.*?gb /,'gb ')).slice(0,140)+'</div>';}
     else if(name==='Bash'){type='bash';label=esc((cmd.trim().split(/\s+/)[0]||'bash'));body='<div class="qline mono">'+esc(cmd.slice(0,140))+'</div>';}
     else if(name==='Read'||name==='Grep'||name==='Glob'){type=name.toLowerCase();label=esc(((inp.file_path||inp.pattern||inp.path||name)+'').split('/').slice(-1)[0]);}
     else if(name==='Write'||name==='Edit'){type='write';label=esc(((inp.file_path||'file')+'').split('/').slice(-1)[0]);}
-    else if(name==='Task'){tile='sub';type='sub-agent';label=esc(inp.subagent_type||inp.description||'sub');}
+    else if(name==='Task'||name==='Agent'){tile='sub';type='sub-agent';label=esc(inp.subagent_type||inp.description||'sub');}
     else if(name==='WebSearch'||name==='WebFetch'){type='web';label=esc(((inp.query||inp.url||'web')+'').slice(0,40));}
-    const g=tile==='brain'?'❖':tile==='sub'?'◇':'▸';
-    if(result)body+='<div class="outsum mono">'+esc((result+'').slice(0,240))+'</div>';
-    return '<div class="node tool"><div class="tc"><div class="tch"><span class="tile '+tile+'">'+g+'</span><span class="tctype">'+esc(type)+'</span><span class="tcname">'+label+'</span><span class="tctime mono ok">done</span></div><div class="tcb">'+body+'</div></div></div>';
+    const g=tile==='brain'?'❖':tile==='sub'?'◇':'▸', sub=tile==='sub';
+    const timeLabel=(dur!=null)?dur.toFixed(1)+'s':(ev.ts!=null?'@'+ev.ts.toFixed(0)+'s':'done');
+    if(result){
+      if(sub)body+='<div class="nested"><div class="nres">'+esc((result+'').slice(0,320))+'</div></div>';
+      else body+='<div class="outsum mono">'+esc((result+'').slice(0,240))+'</div>';
+    }
+    return '<div class="node tool'+(sub?' depth1':'')+'"><div class="tc"><div class="tch"><span class="tile '+tile+'">'+g+'</span><span class="tctype">'+esc(type)+'</span><span class="tcname">'+label+'</span><span class="tctime mono ok">'+timeLabel+'</span></div><div class="tcb">'+body+'</div></div></div>';
   }
   function renderEvents(evs){
     let h='',i=0;
     while(i<evs.length){const ev=evs[i];
       if(ev.kind==='text'){h+='<div class="node"><div class="turn agent"><div class="tav">'+esc(current.slice(0,2).toUpperCase())+'</div><div class="tbody"><span class="say">'+esc((ev.text||'').slice(0,400))+'</span></div></div></div>';i++;}
-      else if(ev.kind==='tool'){let r=(evs[i+1]&&evs[i+1].kind==='result')?evs[i+1].text:null;h+=toolCard(ev,r);i+=r?2:1;}
+      else if(ev.kind==='tool'){const rEv=(evs[i+1]&&evs[i+1].kind==='result')?evs[i+1]:null;h+=toolCard(ev,rEv);i+=rEv?2:1;}
       else if(ev.kind==='result'){i++;}
-      else if(ev.kind==='done'){h+='<div class="node"><div class="think mono">Run '+(ev.ok?'complete':'ended')+(ev.cost?(' · $'+ev.cost):'')+'. Any drafts are in the queue for approval.</div></div>';i++;}
+      else if(ev.kind==='done'){const el=(ev.ts!=null)?' · '+ev.ts.toFixed(1)+'s':'';h+='<div class="node result"><div class="think mono">Run '+(ev.ok?'complete':'ended')+el+(ev.cost?(' · $'+ev.cost):'')+'. Drafts queued for approval.</div></div>';i++;}
       else i++;
     }
     return h||'<div class="node"><div class="think mono">Working…</div></div>';
