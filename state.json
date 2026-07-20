@@ -1,8 +1,8 @@
 {
-  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-20 13:27","as_of":"2026-07-20 13:27 refresh","tier":"foundation",
-  "heartbeat":"live","infra":{"brain":true,"whatsapp":true,"automation":false},"schedules":[{"name": "heartbeat", "when": "weekday 08:30 \u00b7 fast scan", "loaded": true, "last": "2026-07-20", "failures": 2}, {"name": "curator", "when": "Sunday 20:00 \u00b7 brain tidy", "loaded": true, "last": "2026-07-20", "failures": 0}, {"name": "dream", "when": "nightly 03:30 \u00b7 full cycle", "loaded": true, "last": "2026-07-20", "failures": 1}],
+  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-20 15:27","as_of":"2026-07-20 15:27 refresh","tier":"foundation",
+  "heartbeat":"live","infra":{"brain":true,"whatsapp":true,"automation":true},"schedules":[{"name": "heartbeat", "when": "weekday 08:30 \u00b7 fast scan", "loaded": true, "last": "2026-07-20", "failures": 2}, {"name": "curator", "when": "Sunday 20:00 \u00b7 brain tidy", "loaded": true, "last": "2026-07-20", "failures": 0}, {"name": "dream", "when": "nightly 03:30 \u00b7 full cycle", "loaded": true, "last": "2026-07-20", "failures": 1}],
   "spine":["system.md","invariants.md","agency.yaml","brain/connect.md"],
-  "stats":{"os":6,"agents":6,"skills":89,"gates":48,"queue":4,"integrations":"2/3"},
+  "stats":{"os":6,"agents":6,"skills":89,"gates":48,"queue":4,"integrations":"3/3"},
   "os":[
     {"id":"founder-os","label":"Founder OS","agent":"zayn","role":"Orchestrator","hb":"ready",
      "counts":[["agents",6],["skills",89],["gates",48],["queued",4]],
@@ -20,7 +20,7 @@
      "counts":[["skills",14],["queued",0],["QA floor","8/10"]],
      "desc":"Landing pages, creatives, decks. Rendered, QA'd, queued. Nothing ships to live without a go."},
     {"id":"ops-os","label":"Ops OS","agent":"ironman","role":"CRM + automation","hb":"ready",
-     "counts":[["skills",14],["integrations","2/3"],["invoices",0]],
+     "counts":[["skills",14],["integrations","3/3"],["invoices",0]],
      "desc":"CRM, automations, invoicing, integration health. Tests one real lead before anything goes live."}
   ],
   "system":[
