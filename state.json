@@ -1,8 +1,8 @@
 {
-  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-21 03:28","as_of":"2026-07-21 03:28 refresh","tier":"foundation",
-  "heartbeat":"live","infra":{"brain":true,"whatsapp":true,"automation":true},"schedules":[{"name": "heartbeat", "when": "weekday 08:30 \u00b7 fast scan", "loaded": true, "last": "2026-07-20", "failures": 2}, {"name": "curator", "when": "Sunday 20:00 \u00b7 brain tidy", "loaded": true, "last": "2026-07-20", "failures": 0}, {"name": "dream", "when": "nightly 03:30 \u00b7 full cycle", "loaded": true, "last": "2026-07-20", "failures": 1}],
+  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-21 14:54","as_of":"2026-07-21 14:54 refresh","tier":"foundation",
+  "heartbeat":"live","infra":{"brain":true,"whatsapp":true,"automation":false},"schedules":[{"name": "heartbeat", "when": "weekday 08:30 \u00b7 fast scan", "loaded": true, "last": "2026-07-20", "failures": 2}, {"name": "curator", "when": "Sunday 20:00 \u00b7 brain tidy", "loaded": true, "last": "2026-07-20", "failures": 0}, {"name": "dream", "when": "nightly 03:30 \u00b7 full cycle", "loaded": true, "last": "2026-07-21", "failures": 2}],
   "spine":["system.md","invariants.md","agency.yaml","brain/connect.md"],
-  "stats":{"os":6,"agents":6,"skills":89,"gates":48,"queue":4,"integrations":"3/3"},
+  "stats":{"os":6,"agents":6,"skills":89,"gates":48,"queue":4,"integrations":"2/3"},
   "os":[
     {"id":"founder-os","label":"Founder OS","agent":"zayn","role":"Orchestrator","hb":"ready",
      "counts":[["agents",6],["skills",89],["gates",48],["queued",4]],
@@ -20,7 +20,7 @@
      "counts":[["skills",14],["queued",0],["QA floor","8/10"]],
      "desc":"Landing pages, creatives, decks. Rendered, QA'd, queued. Nothing ships to live without a go."},
     {"id":"ops-os","label":"Ops OS","agent":"ironman","role":"CRM + automation","hb":"ready",
-     "counts":[["skills",14],["integrations","3/3"],["invoices",0]],
+     "counts":[["skills",14],["integrations","2/3"],["invoices",0]],
      "desc":"CRM, automations, invoicing, integration health. Tests one real lead before anything goes live."}
   ],
   "system":[
@@ -43,7 +43,7 @@
     "columns":["Surfaced","Researched","Drafted","Review","Queued","Booked"],
     "cards":[{"col": "Queued", "os": "ops-os", "agent": "ironman", "label": "ironman draft queued", "flag": "awaiting approval"}, {"col": "Queued", "os": "outreach-os", "agent": "steph", "label": "steph draft queued", "flag": "awaiting approval"}, {"col": "Queued", "os": "outreach-os", "agent": "steph", "label": "steph draft queued", "flag": "awaiting approval"}, {"col": "Queued", "os": "founder-os", "agent": "zayn", "label": "zayn draft queued", "flag": "awaiting approval"}]
   },
-  "activity":[{"when": "2026-07-20", "agent": "zayn", "event": "recorded a run \u2014 55 log entries"}, {"when": "2026-07-20", "agent": "system", "event": "recorded a run \u2014 1 log entries"}, {"when": "2026-07-20", "agent": "steph", "event": "recorded a run \u2014 105 log entries"}, {"when": "2026-07-20", "agent": "kyrie", "event": "recorded a run \u2014 67 log entries"}, {"when": "2026-07-20", "agent": "heartbeat", "event": "recorded a run \u2014 45 log entries"}, {"when": "2026-07-20", "agent": "drose", "event": "recorded a run \u2014 27 log entries"}, {"when": "2026-07-20", "agent": "curator", "event": "recorded a run \u2014 3 log entries"}],
+  "activity":[{"when": "2026-07-21", "agent": "system", "event": "recorded a run \u2014 1 log entries"}, {"when": "2026-07-20", "agent": "zayn", "event": "recorded a run \u2014 55 log entries"}, {"when": "2026-07-20", "agent": "system", "event": "recorded a run \u2014 1 log entries"}, {"when": "2026-07-20", "agent": "steph", "event": "recorded a run \u2014 105 log entries"}, {"when": "2026-07-20", "agent": "kyrie", "event": "recorded a run \u2014 67 log entries"}, {"when": "2026-07-20", "agent": "heartbeat", "event": "recorded a run \u2014 45 log entries"}, {"when": "2026-07-20", "agent": "drose", "event": "recorded a run \u2014 27 log entries"}],
   "gates":[
     {"cat":"Outbound & approval","n":3,"sample":"Never send without explicit approval"},
     {"cat":"Truth & fabrication","n":8,"sample":"Never invent case studies or numbers"},
