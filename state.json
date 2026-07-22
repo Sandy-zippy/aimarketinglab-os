@@ -1,5 +1,5 @@
 {
-  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-22 21:42","as_of":"2026-07-22 21:42 refresh","tier":"foundation",
+  "name":"AI Marketing Lab OS","boot":"aimarketinglab","updated":"2026-07-22 23:42","as_of":"2026-07-22 23:42 refresh","tier":"foundation",
   "heartbeat":"live","infra":{"brain":true,"whatsapp":true,"automation":true},"schedules":[{"name": "heartbeat", "when": "weekday 08:30 \u00b7 fast scan", "loaded": true, "last": "2026-07-22", "failures": 2}, {"name": "curator", "when": "Sunday 20:00 \u00b7 brain tidy", "loaded": true, "last": "2026-07-20", "failures": 0}, {"name": "dream", "when": "nightly 03:30 \u00b7 full cycle", "loaded": true, "last": "2026-07-22", "failures": 4}],
   "spine":["system.md","invariants.md","agency.yaml","brain/connect.md"],
   "stats":{"os":6,"agents":6,"skills":89,"gates":48,"queue":4,"integrations":"3/3"},
